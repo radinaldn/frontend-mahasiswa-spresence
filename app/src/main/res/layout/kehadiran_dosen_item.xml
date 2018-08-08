@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+    card_view:cardCornerRadius="6dp"
+    card_view:cardElevation="3dp"
+    card_view:cardUseCompatPadding="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="5dp"
+        xmlns:app="http://schemas.android.com/tools"
+        >
+        <ImageView
+
+            android:id="@+id/iv_foto"
+            android:layout_margin="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <!-- TextView Nama Mahasiwa -->
+            <TextView
+                android:id="@+id/tv_id_presensi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="001"
+                android:visibility="gone" />
+            <!-- TextView Npm Mahasiswa -->
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:id="@+id/tv_nama"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Radinal Dwiki"
+                    />
+                <ImageView
+                    android:id="@+id/iv_proses"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp" />
+            </LinearLayout>
+
+            <!-- TextView Nama Mahasiwa -->
+            <TextView
+                android:id="@+id/tv_nim"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="11451101xxx" />
+
+            <!-- TextView NoHp Mahasiswa -->
+            <TextView
+                android:id="@+id/tv_jarak"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0 Meter" />
+
+            <TextView
+                android:id="@+id/tv_waktu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="07:00:00" />
+
+            <TextView
+                android:textColor="@color/textColorWhite"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:id="@+id/tv_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="n/a" />
+
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/tv_proses"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pending" />
+
+
+        </LinearLayout>
+
+
+
+
+
+    </LinearLayout>
+
+
+
+</android.support.v7.widget.CardView>
