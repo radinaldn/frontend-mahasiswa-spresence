@@ -13,11 +13,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.inkubator.radinaldn.smartabsen.R;
-import com.inkubator.radinaldn.smartabsen.adapters.HistoriPresensiAdapter;
-import com.inkubator.radinaldn.smartabsen.models.PresensiDetail;
-import com.inkubator.radinaldn.smartabsen.responses.ResponsePresensiDetail;
+
+import com.inkubator.radinaldn.smartabsen.adapters.KehadiranDosenAdapter;
+import com.inkubator.radinaldn.smartabsen.models.KehadiranDosen;
+import com.inkubator.radinaldn.smartabsen.responses.ResponseKehadiranDosen;
+
 import com.inkubator.radinaldn.smartabsen.rests.ApiClient;
 import com.inkubator.radinaldn.smartabsen.rests.ApiInterface;
 import com.inkubator.radinaldn.smartabsen.utils.SessionManager;
@@ -32,32 +35,29 @@ import retrofit2.Response;
  * Created by radinaldn on 25/07/18.
  */
 
-public class HistoriPresensiFragment extends Fragment {
+public class KehadiranDosenFragment extends Fragment {
     private RecyclerView recyclerView;
-    private HistoriPresensiAdapter adapter;
-    private ArrayList<PresensiDetail> presensiArrayList;
+    private KehadiranDosenAdapter adapter;
+    private ArrayList<KehadiranDosen> kehadiranDosenArrayList;
     private static final String ARG_STATUS= "status";
-    private static final String TAG_NIM= "nim";
-    public static String ID_PRESENSI;
 
     ApiInterface apiService;
     SwipeRefreshLayout swipeRefreshLayout;
 
-    public static final String TAG = HistoriPresensiFragment.class.getSimpleName();
+    public static final String TAG = KehadiranDosenFragment.class.getSimpleName();
     SessionManager sessionManager;
     private String status;
 
-    public static HistoriPresensiFragment newInstance(String id_presensi, String status_kehadiran){
-        ID_PRESENSI = id_presensi;
+    public static KehadiranDosenFragment newInstance(String status_kehadiran){
         Bundle args = new Bundle();
         args.putString(ARG_STATUS, status_kehadiran);
 
-        HistoriPresensiFragment fragment = new HistoriPresensiFragment();
+        KehadiranDosenFragment fragment = new KehadiranDosenFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
-    public HistoriPresensiFragment() {
+    public KehadiranDosenFragment() {
         // Required empty public constructor
     }
 
@@ -77,12 +77,12 @@ public class HistoriPresensiFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_histori_presensi, container, false);
+        View view = inflater.inflate(R.layout.fragment_kehadiran_dosen, container, false);
         recyclerView = view.findViewById(R.id.recyclerView);
 
 
 
-        swipeRefreshLayout = view.findViewById(R.id.swipe_activity_histori_presensi);
+        swipeRefreshLayout = view.findViewById(R.id.swipe_activity_kehadiran_dosen);
         swipeRefreshLayout.setColorSchemeResources(R.color.refresh, R.color.refresh1, R.color.refresh2);
         swipeRefreshLayout.setOnRefreshListener( new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -94,51 +94,43 @@ public class HistoriPresensiFragment extends Fragment {
             }
         });
 
-        getHistoriPresensi(ID_PRESENSI, status);
+        getKehadiranDosen(status);
 
         return view;
     }
 
-    private void getHistoriPresensi(String idPresensi, final String status_kehadiran) {
-        Call<ResponsePresensiDetail> call = apiService.presensiDetailFindAllMahasiswaByIdPresensiAndStatusKehadiran(idPresensi, status_kehadiran);
+    private void getKehadiranDosen(final String status_kehadiran) {
+        Call<ResponseKehadiranDosen> call = apiService.dosenFindAllByStatusKehadiran(status_kehadiran);
 
-        call.enqueue(new Callback<ResponsePresensiDetail>() {
+        call.enqueue(new Callback<ResponseKehadiranDosen>() {
             @Override
-            public void onResponse(Call<ResponsePresensiDetail> call, Response<ResponsePresensiDetail> response) {
+            public void onResponse(Call<ResponseKehadiranDosen> call, Response<ResponseKehadiranDosen> response) {
                 if (response.isSuccessful()){
-                    if (response.body().getPresensiDetail().size()>0){
-                        presensiArrayList = new ArrayList<>();
-                        for (int i = 0; i < response.body().getPresensiDetail().size(); i++) {
-                            Log.i(TAG, "onResponse: Mahasiswa "+status+ ". "+response.body().getPresensiDetail().get(i).getNamaMahasiswa());
+                    if(response.body().getKehadiranDosen().size()>0){
+                        kehadiranDosenArrayList = new ArrayList<>();
 
-                            String id_presensi = response.body().getPresensiDetail().get(i).getIdPresensi();
-                            String nim = response.body().getPresensiDetail().get(i).getNim();
-                            String nama_mahasiswa = response.body().getPresensiDetail().get(i).getNamaMahasiswa();
-                            String status = response.body().getPresensiDetail().get(i).getStatus();
-                            String lat = response.body().getPresensiDetail().get(i).getLat();
-                            String lng = response.body().getPresensiDetail().get(i).getLng();
-                            String waktu = response.body().getPresensiDetail().get(i).getWaktu();
-                            String jarak = response.body().getPresensiDetail().get(i).getJarak();
-                            String proses = response.body().getPresensiDetail().get(i).getProses();
-                            String foto_mahasiswa = response.body().getPresensiDetail().get(i).getFoto_mahasiswa();
+                        for (int i = 0; i < response.body().getKehadiranDosen().size(); i++) {
+                            Log.i(TAG, "onResponse: dosen "+status_kehadiran+ ": "+response.body().getKehadiranDosen().get(i).getNama_dosen());
 
-                            presensiArrayList.add(new PresensiDetail(id_presensi, nim, nama_mahasiswa, status, lat, lng, waktu, jarak, proses, foto_mahasiswa));
+                            String str_nip = response.body().getKehadiranDosen().get(i).getNip();
+                            String str_nama_dosen = response.body().getKehadiranDosen().get(i).getNama_dosen();
+                            String str_foto = response.body().getKehadiranDosen().get(i).getFoto();
+                            String str_status = response.body().getKehadiranDosen().get(i).getStatus_kehadiran();
+                            String str_nama_kota = response.body().getKehadiranDosen().get(i).getNama_kota();
+                            String str_last_update = response.body().getKehadiranDosen().get(i).getLast_update();
 
+                            kehadiranDosenArrayList.add(new KehadiranDosen(str_nip, str_nama_dosen, str_foto, str_status, str_nama_kota, str_last_update));
 
-
-                            adapter = new HistoriPresensiAdapter(presensiArrayList, getContext());
+                            adapter = new KehadiranDosenAdapter(getContext(), kehadiranDosenArrayList);
 
                             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
-
                             recyclerView.setLayoutManager(layoutManager);
-
                             recyclerView.setAdapter(adapter);
-
                             swipeRefreshLayout.setRefreshing(false);
 
                         }
                     } else {
-                        Toast.makeText(getContext(), "Data mahasiswa "+status_kehadiran+" kosong", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Data dosen yang "+status_kehadiran+" kosong.", Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     Toast.makeText(getContext(), "onResponse error: " +response.errorBody(), Toast.LENGTH_LONG).show();
@@ -146,9 +138,10 @@ public class HistoriPresensiFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<ResponsePresensiDetail> call, Throwable t) {
-                Toast.makeText(getContext(), "onFailure : " +t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+            public void onFailure(Call<ResponseKehadiranDosen> call, Throwable t) {
+            Toast.makeText(getContext(), "onFailure : "+t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
             }
         });
+
     }
 }

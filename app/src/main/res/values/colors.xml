@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#03A9F4</color>
+    <color name="colorPrimaryLight">#B3E5FC</color>
+    <color name="colorPrimaryDark">#0288D1</color>
+    <color name="colorAccent">#CDDC39</color>
+    <color name="colorSubTitle">#757575</color>
+    <color name="windowBackground">#fff</color>
+    <color name="navigationBarColor">#009688</color>
+    <color name="statusBarColor">#00695C</color>
+    <color name="textColorWhite">#FFFFFF</color>
+    <color name="textColorPrimary">#212121</color>
+    <color name="textColorSecondary">#757575</color>
+    <color name="textColorDisabled">#BDBDBD</color>
+
+    <color name="textSuccessDark">#4CAF50</color>
+    <color name="textSuccess">#FBC02D</color>
+    <color name="textWarning">#E64A19</color>
+    <color name="textDanger">#F44336</color>
+    <color name="textDangerDark">#D32F2F</color>
+    <color name="RedBootstrap">#d9534f</color>
+    <color name="GreenBootstrap">#5cb85c</color>
+
+
+
+    <color name="refresh">@color/colorAccent</color>
+    <color name="refresh1">@color/colorPrimaryDark</color>
+    <color name="refresh2">@color/colorPrimary</color>
+
+</resources>

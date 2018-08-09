@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:visible="false"
+            android:id="@+id/absen"
+            android:icon="@drawable/ic_school"
+            android:title="Absen" />
+        <item
+            android:id="@+id/jadwal_kuliah"
+            android:icon="@drawable/ic_clock"
+            android:title="Jadwal Kuliah" />
+        <item
+            android:id="@+id/kehadiran_dosen"
+            android:icon="@drawable/ic_check_dosen"
+            android:title="Kehadiran Dosen" />
+        <item
+            android:id="@+id/histori_saya"
+            android:icon="@drawable/ic_calendar"
+            android:title="Histori Perkuliahan" />
+        <item
+            android:visible="false"
+            android:id="@+id/berita"
+            android:icon="@drawable/ic_content"
+            android:title="Berita Terbaru" />
+    </group>
+
+    <item android:title="Lainnya">
+        <menu>
+            <item
+                android:icon="@drawable/ic_settings_black_24dp"
+                android:id="@+id/nav_setting"
+                android:title="Pengaturan"/>
+            <item
+                android:visible="false"
+                android:id="@+id/nav_help"
+                android:icon="@drawable/help"
+                android:title="Smart Absen FAQ" />
+
+            <item
+                android:id="@+id/nav_about"
+                android:icon="@drawable/info"
+                android:title="Tentang" />
+        </menu>
+
+    </item>
+
+
+</menu>

@@ -1,13 +1,14 @@
-package com.inkubator.radinaldn.smartabsendosen.responses;
+package com.inkubator.radinaldn.smartabsen.responses;
 
 /**
  * Created by radinaldn on 21/07/18.
  */
 
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.inkubator.radinaldn.smartabsendosen.models.HistoriMengajar;
+import com.inkubator.radinaldn.smartabsen.models.HistoriMengajar;
+
+import java.util.List;
 
 public class ResponseHistoriMengajar {
 

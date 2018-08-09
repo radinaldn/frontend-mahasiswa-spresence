@@ -1,6 +1,157 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
 
-</android.support.constraint.ConstraintLayout>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    card_view:cardCornerRadius="6dp"
+    card_view:cardElevation="3dp"
+    card_view:cardUseCompatPadding="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_margin="5dp">
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <!-- TextView Nama Mahasiwa -->
+            <TextView
+                android:visibility="gone"
+                android:text="001"
+                android:id="@+id/tv_id_presensi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <!-- TextView Nama Mahasiwa -->
+            <TextView
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:text="Dasar Pemrograman"
+                android:id="@+id/tv_matakuliah"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <!-- TextView Npm Mahasiswa -->
+            <TextView
+                android:textStyle="bold"
+                android:text="Pertemuan 2"
+                android:id="@+id/tv_pertemuan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <!-- TextView NoHp Mahasiswa -->
+            <TextView
+                android:text="Kelas A"
+                android:id="@+id/tv_kelas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:text="FST 301"
+                android:id="@+id/tv_ruangan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:text="19 Jul 2018 08:36:56"
+                android:id="@+id/tv_waktu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                >
+
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    >
+
+                    <TextView
+                        android:textColor="@color/colorPrimary"
+                        android:id="@+id/tv_jlhadir"
+                        android:drawableLeft="@drawable/ic_hadir"
+                        android:gravity="center_vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="Hadir" />
+
+                    <TextView
+                        android:text="    "
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:textColor="@color/colorAccent"
+                        android:id="@+id/tv_jltdkhadir"
+                        android:drawableLeft="@drawable/ic_tidak_hadir"
+                        android:gravity="center_vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text=" Tidak hadir"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:gravity="end">
+
+
+
+                    <Button
+
+                        android:paddingLeft="5dp"
+                        android:id="@+id/bt_detail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:background="@color/colorAccent"
+                        android:drawableLeft="@drawable/ic_eye"
+                        android:drawableTint="@color/textColorPrimary"
+                        android:text=" DETAIL"
+                        android:textColor="@color/textColorWhite" />
+
+                    <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text=" " />-->
+
+                    <!--<Button-->
+                    <!--android:paddingLeft="5dp"-->
+                    <!--android:id="@+id/bt_histori"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_gravity="center_vertical"-->
+                    <!--android:background="@color/colorAccent"-->
+                    <!--android:drawableLeft="@drawable/ic_history_black_24dp"-->
+                    <!--android:drawableTint="@color/textColorPrimary"-->
+                    <!--android:text=" Histori"-->
+                    <!--android:textColor="@color/textColorPrimary" />-->
+
+                </LinearLayout>
+
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

@@ -1,4 +1,4 @@
-package com.inkubator.radinaldn.smartabsendosen.models;
+package com.inkubator.radinaldn.smartabsen.models;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

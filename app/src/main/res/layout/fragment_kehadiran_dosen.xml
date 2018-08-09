@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/swipe_activity_histori_presensi"
+        android:id="@+id/swipe_activity_kehadiran_dosen"
         tools:context=".activities.HistoriPresensiActivity">
 
 
