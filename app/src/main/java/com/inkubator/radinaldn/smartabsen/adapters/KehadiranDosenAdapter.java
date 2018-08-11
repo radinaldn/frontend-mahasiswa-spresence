@@ -28,7 +28,7 @@ public class KehadiranDosenAdapter extends RecyclerView.Adapter<KehadiranDosenAd
     private Context context;
 
     private ArrayList<KehadiranDosen> dataList;
-    private static final String TAG = HistoriPresensiAdapter.class.getSimpleName();
+    private static final String TAG = KehadiranDosenAdapter.class.getSimpleName();
 
     ApiInterface apiService;
 

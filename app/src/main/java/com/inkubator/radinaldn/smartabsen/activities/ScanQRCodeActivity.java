@@ -1,7 +1,7 @@
 package com.inkubator.radinaldn.smartabsen.activities;
 
 import android.Manifest;
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,16 +11,14 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScanner;
@@ -30,15 +28,22 @@ import com.inkubator.radinaldn.smartabsen.R;
 import com.inkubator.radinaldn.smartabsen.responses.ResponseIsiPresensi;
 import com.inkubator.radinaldn.smartabsen.rests.ApiClient;
 import com.inkubator.radinaldn.smartabsen.rests.ApiInterface;
+import com.inkubator.radinaldn.smartabsen.utils.ConnectionDetector;
 import com.inkubator.radinaldn.smartabsen.utils.SessionManager;
-import com.shaz.library.erp.RuntimePermissionHandler;
-import com.shaz.library.erp.RuntimePermissionUtils;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.DexterError;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.PermissionRequestErrorListener;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -69,7 +74,7 @@ public class ScanQRCodeActivity extends AppCompatActivity  {
     ArrayList scanResultSub;
     SessionManager sessionManager;
     private static final String TAG_NIM = "nim";
-    private final int REQ_CODE_LOCATION_PERMISSION = 1001;
+    ConnectionDetector connectionDetector;
 
     private class MyLocationListener implements LocationListener {
 
@@ -118,47 +123,77 @@ public class ScanQRCodeActivity extends AppCompatActivity  {
     }
 
     private void nyalakanScanner(final String myLat, final String myLng){
-        materialBarcodeScanner = new MaterialBarcodeScannerBuilder()
-                .withActivity(ScanQRCodeActivity.this)
-                .withEnableAutoFocus(true)
-                .withBleepEnabled(true)
-                .withBackfacingCamera()
-                .withText("Arahkan kamera ke QR Code ...")
-                .withCenterTracker()
-                .withResultListener(new MaterialBarcodeScanner.OnResultListener() {
+
+        Dexter.withActivity(this)
+                .withPermission(Manifest.permission.CAMERA)
+                .withListener(new PermissionListener() {
                     @Override
-                    public void onResult(Barcode barcode) {
-                        barcodeResult = barcode;
+                    public void onPermissionGranted(PermissionGrantedResponse response) {
+                        Toast.makeText(getApplicationContext(), "Camera permissions are granted!", Toast.LENGTH_SHORT).show();
+                        // permission is granted
+                        materialBarcodeScanner = new MaterialBarcodeScannerBuilder()
+                                .withActivity(ScanQRCodeActivity.this)
+                                .withEnableAutoFocus(true)
+                                .withBleepEnabled(true)
+                                .withBackfacingCamera()
+                                .withText("Arahkan kamera ke QR Code ...")
+                                .withCenterTracker()
+                                .withResultListener(new MaterialBarcodeScanner.OnResultListener() {
+                                    @Override
+                                    public void onResult(Barcode barcode) {
+                                        barcodeResult = barcode;
 //                        Toast.makeText(getApplicationContext(), "latitude saya : "+latittude+"\nHasil Scan : " + barcode.rawValue, Toast.LENGTH_LONG).show();
-                        final String scanResult = barcode.rawValue;
-                        Log.i("TAG", "onLocationChanged: scanResult = "+scanResult);
+                                        final String scanResult = barcode.rawValue;
+                                        Log.i("TAG", "onLocationChanged: scanResult = "+scanResult);
 
-                        for (String retval: scanResult.split("#")){
-                            scanResultSub.add(retval);
-                            Log.i("TAG", "onLocationChanged: scanResultSub = "+retval);
-                        }
+                                        for (String retval: scanResult.split("#")){
+                                            scanResultSub.add(retval);
+                                            Log.i("TAG", "onLocationChanged: scanResultSub = "+retval);
+                                        }
 
-                        double doubleDosenLat = Double.parseDouble(scanResultSub.get(1).toString());
-                        double doubleDosenLng = Double.parseDouble(scanResultSub.get(2).toString());
-                        double doubleMyLat = Double.parseDouble(myLat);
-                        double doubleMyLng = Double.parseDouble(myLng);
+                                        double doubleDosenLat = Double.parseDouble(scanResultSub.get(1).toString());
+                                        double doubleDosenLng = Double.parseDouble(scanResultSub.get(2).toString());
+                                        double doubleMyLat = Double.parseDouble(myLat);
+                                        double doubleMyLng = Double.parseDouble(myLng);
 
-                        // hitung jarak
-                        String jarak = getDistance(doubleDosenLat, doubleMyLat, doubleDosenLng, doubleMyLng, 0, 0);
-                        Log.i("ScanQRCo", "Jarak : "+jarak);
+                                        // hitung jarak
+                                        String jarak = getDistance(doubleDosenLat, doubleMyLat, doubleDosenLng, doubleMyLng, 0, 0);
+                                        Log.i("ScanQRCo", "Jarak : "+jarak);
 
-                        String id_presensi = scanResultSub.get(0).toString();
-                        String nim = sessionManager.getMahasiswaDetail().get(TAG_NIM);
-                        String lat = myLat;
-                        String lng = myLng;
-                        String alt = altitude;
+                                        String id_presensi = scanResultSub.get(0).toString();
+                                        String nim = sessionManager.getMahasiswaDetail().get(TAG_NIM);
+                                        String lat = myLat;
+                                        String lng = myLng;
+                                        String alt = altitude;
+
+                                        if (connectionDetector.isConnectingToInternet()) {
+                                            isiPresensi(id_presensi, nim, lat, lng, jarak);
+                                        } else {
+
+                                            finish();
+                                            Toast.makeText(getApplicationContext(), "Gagal melakukan presensi, pastikan koneksi internet menyala dan coba lagi.", Toast.LENGTH_SHORT).show();
+                                        }
 
 
-                        isiPresensi(id_presensi, nim, lat, lng, jarak);
+                                    }
+                                })
+                                .build();
+                        materialBarcodeScanner.startScan();
                     }
-                })
-                .build();
-        materialBarcodeScanner.startScan();
+
+                    @Override
+                    public void onPermissionDenied(PermissionDeniedResponse response) {
+                        // check for permanent denial of permission
+                        if (response.isPermanentlyDenied()) {
+                            showSettingsDialog();
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+                        token.continuePermissionRequest();
+                    }
+                }).check();
     }
 
     // method isi Presensi
@@ -177,13 +212,15 @@ public class ScanQRCodeActivity extends AppCompatActivity  {
                      4. Error (500)
                      */
 
-                    if(response.body().getCode().equalsIgnoreCase("200")&&response.body().getStatus().equalsIgnoreCase("OK")){ // jika berhasil isi presensi
+                    // jika Response 200 dan 403 Already
+                    if(response.body().getCode().equalsIgnoreCase("200")&&response.body().getStatus().equalsIgnoreCase("OK") || response.body().getCode().equalsIgnoreCase("403") && response.body().getStatus().equalsIgnoreCase("Already")){ // jika berhasil isi presensi
                         Intent intent = new Intent(ScanQRCodeActivity.this, HistoriPresensiActivity.class);
                         Toast.makeText(ScanQRCodeActivity.this, response.body().getMessage(), Toast.LENGTH_LONG).show();
                         intent.putExtra(TAG_ID_PRESENSI, id_presensi);
                         startActivity(intent);
                         finish();
                     } else {
+
                         Toast.makeText(getApplicationContext(), "onResponse error\n['code'] : "+response.body().getStatus()+"\n['message'] : "+response.body().getMessage(), Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(ScanQRCodeActivity.this, MainActivity.class);
                         Toast.makeText(ScanQRCodeActivity.this, response.body().getMessage(), Toast.LENGTH_LONG).show();
@@ -238,22 +275,87 @@ public class ScanQRCodeActivity extends AppCompatActivity  {
             Log.d("LocationProviders", "Best provider is : " + bestProvider);
         }
 
-            lastLocation = locationManager.getLastKnownLocation(bestProvider);
-            if (lastLocation != null) Log.d("LocationProviders", lastLocation.toString());
+        Dexter.withActivity(this)
+                .withPermissions(
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION)
+                .withListener(new MultiplePermissionsListener() {
+                    //@SuppressLint("MissingPermission")
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport report) {
+                        // check if all permissions are granted
+                        if (report.areAllPermissionsGranted()) {
+                            Toast.makeText(getApplicationContext(), "Location permissions are granted!", Toast.LENGTH_SHORT).show();
+                            lastLocation = locationManager.getLastKnownLocation(bestProvider);
+                            if (lastLocation != null) Log.d("LocationProviders", lastLocation.toString());
+                            locationManager.requestLocationUpdates(
+                                    // aktifkan ambil dari satelit
+                                    // LocationManager.GPS_PROVIDER,
+                                    // aktifkan ambil dari BTS
+                                    // LocationManager.NETWORK_PROVIDER,
+                                    //
+                                                   bestProvider,
+                                    0,
+                                    0,
+                                    locationListener
+                            );
+                        }
 
-            locationManager.requestLocationUpdates(
-                    // aktifkan ambil dari satelit
-//                LocationManager.GPS_PROVIDER,
-                    // aktifkan ambil dari BTS
-                    LocationManager.NETWORK_PROVIDER,
+                        // check for permanent denial of any permission
+                        if (report.isAnyPermissionPermanentlyDenied()) {
+                            // show alert dialog navigating to Settings
+                            showSettingsDialog();
+                        }
+                    }
 
-//                bestProvider,
-                    0,
-                    0,
-                    locationListener
-            );
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                        token.continuePermissionRequest();
+                    }
+                }).
+                withErrorListener(new PermissionRequestErrorListener() {
+                    @Override
+                    public void onError(DexterError error) {
+                        Toast.makeText(getApplicationContext(), "Error occurred! " + error.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .onSameThread()
+                .check();
+        // end
+    }
 
+    /**
+     * Showing Alert Dialog with Settings option
+     * Navigates user to app settings
+     * NOTE: Keep proper title and message depending on your app
+     */
+    private void showSettingsDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ScanQRCodeActivity.this);
+        builder.setTitle("Need Permissions");
+        builder.setMessage("This app needs permission to use this feature. You can grant them in app settings.");
+        builder.setPositiveButton("GOTO SETTINGS", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+                openSettings();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.show();
 
+    }
+
+    // navigating user to app settings
+    private void openSettings() {
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", getPackageName(), null);
+        intent.setData(uri);
+        startActivityForResult(intent, 101);
     }
 
     @Override
@@ -270,6 +372,8 @@ public class ScanQRCodeActivity extends AppCompatActivity  {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        connectionDetector = new ConnectionDetector(ScanQRCodeActivity.this);
 
         sessionManager = new SessionManager(this);
         apiService = ApiClient.getClient().create(ApiInterface.class);

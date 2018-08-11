@@ -5,16 +5,86 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.inkubator.radinaldn.smartabsen.activities.MainActivity"
+    tools:context=".activities.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
-    <!--<TextView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="Hello World!"-->
-        <!--app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--app:layout_constraintLeft_toLeftOf="parent"-->
-        <!--app:layout_constraintRight_toRightOf="parent"-->
-        <!--app:layout_constraintTop_toTopOf="parent" />-->
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".activities.MainActivity">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                >
 
+                <TextView
+                    android:fontFamily="@font/rancho"
+                    android:gravity="bottom"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:background="@drawable/group_school"
+                    android:textAlignment="center"
+                    android:text="Smart Presence"
+                    android:textSize="42sp"
+                    android:textColor="@color/textColorWhite"
+                    />
+
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:weightSum="3"
+
+                    >
+
+
+                    <TextView
+                        android:fontFamily="@font/roboto_slab_regilar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="8dp"
+                        android:layout_marginTop="30dp"
+                        android:background="@color/colorPinkRoseDark"
+                        android:text="Kuliah Hari ini"
+                        android:textSize="18sp"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorWhite"
+                        />
+
+
+                            <android.support.v7.widget.RecyclerView
+                                android:layout_margin="5dp"
+                                xmlns:android="http://schemas.android.com/apk/res/android"
+                                android:id="@+id/recyclerView"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_centerHorizontal="true"
+                                android:layout_centerVertical="true" />
+
+
+
+
+
+                </LinearLayout>
+
+
+
+
+
+            </LinearLayout>
+
+        </ScrollView>
+
+
+
+    </LinearLayout>
 </android.support.constraint.ConstraintLayout>

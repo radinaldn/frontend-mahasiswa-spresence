@@ -30,6 +30,7 @@
 
     <item android:title="Lainnya">
         <menu>
+
             <item
                 android:icon="@drawable/ic_settings_black_24dp"
                 android:id="@+id/nav_setting"

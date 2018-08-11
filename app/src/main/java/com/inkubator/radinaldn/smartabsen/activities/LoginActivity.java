@@ -2,10 +2,7 @@ package com.inkubator.radinaldn.smartabsen.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -18,6 +15,7 @@ import com.inkubator.radinaldn.smartabsen.models.Mahasiswa;
 import com.inkubator.radinaldn.smartabsen.responses.ResponseLogin;
 import com.inkubator.radinaldn.smartabsen.rests.ApiClient;
 import com.inkubator.radinaldn.smartabsen.rests.ApiInterface;
+import com.inkubator.radinaldn.smartabsen.utils.ConnectionDetector;
 import com.inkubator.radinaldn.smartabsen.utils.SessionManager;
 
 import java.util.List;
@@ -48,10 +46,14 @@ public class LoginActivity extends AppCompatActivity{
     String nim, password, imei;
     public final String TAG = LoginActivity.class.getSimpleName();
 
+    ConnectionDetector connectionDetector;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        connectionDetector = new ConnectionDetector(LoginActivity.this);
 
         //init
         ButterKnife.bind(this);
@@ -62,8 +64,11 @@ public class LoginActivity extends AppCompatActivity{
         btlogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i(TAG, "onClick: btlogin di tekan");
-                loginUser();
+                if (connectionDetector.isConnectingToInternet()) {
+                    loginUser();
+                } else {
+                    connectionDetector.showNoConnectionDialog(LoginActivity.this);
+                }
             }
         });
     }

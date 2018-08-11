@@ -57,7 +57,11 @@
         <activity
             android:name=".activities.ProfileSayaActivity"
             android:label="@string/title_activity_profile_saya"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/noAnimTheme" />
+
+        <activity android:name=".activities.HistoriPerkuliahanActivity"
+            android:theme="@style/noAnimTheme"
+            />
     </application>
 
 </manifest>

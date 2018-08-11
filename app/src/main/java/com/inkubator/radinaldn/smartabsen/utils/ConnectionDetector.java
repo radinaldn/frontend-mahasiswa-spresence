@@ -9,6 +9,8 @@ import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import com.inkubator.radinaldn.smartabsen.R;
+
 
 public class ConnectionDetector {
     private Context _context;
@@ -34,7 +36,11 @@ public class ConnectionDetector {
     }
 
     @SuppressWarnings("deprecation")
-    public void showAlertDialog(Context context, String title, String message, Boolean status) {
+    public void showNoConnectionDialog(Context context) {
+
+        String title = "Koneksi internet mati";
+        String message = "Aplikasi membutuhkan koneksi internet";
+
         AlertDialog alertDialog = new AlertDialog.Builder(context).create();
 
         // Setting Dialog Title
@@ -44,11 +50,13 @@ public class ConnectionDetector {
         alertDialog.setMessage(message);
 
         // Setting alert dialog icon
-//        alertDialog.setIcon((status) ? R.drawable.success : R.drawable.fail);
+//        alertDialog.setIcon((status) ? R.drawable.ic_check_circle_black_24dp : R.drawable.);
+        alertDialog.setIcon(R.drawable.ic_signal_cellular_connected_no_internet_0_bar_black_24dp);
 
         // Setting OK Button
         alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
+
             }
         });
 

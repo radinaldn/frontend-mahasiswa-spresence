@@ -1,6 +1,7 @@
 package com.inkubator.radinaldn.smartabsen.rests;
 
 import com.inkubator.radinaldn.smartabsen.responses.ResponseHistoriMengajar;
+import com.inkubator.radinaldn.smartabsen.responses.ResponseHistoriPerkuliahan;
 import com.inkubator.radinaldn.smartabsen.responses.ResponseIsiPresensi;
 import com.inkubator.radinaldn.smartabsen.responses.ResponseKehadiranDosen;
 import com.inkubator.radinaldn.smartabsen.responses.ResponseLogin;
@@ -24,6 +25,19 @@ public interface ApiInterface {
     /*
     API Mahasiswa
      */
+
+    // untuk mendapatkan data histori perkuliah by nim and date
+    @GET("presensi-detail/find-by-nim-and-date")
+    Call<ResponseHistoriPerkuliahan> presensiDetailFindByNimAndDate(
+            @Query("nim") String nim,
+            @Query("date") String date
+    );
+
+    // untuk mendapatkan data kuliah hari ini
+    @GET("mengambil/find-all-today-by-nim")
+    Call<ResponseMengambil> mengambilFindAllTodayByNim(
+            @Query("nim") String nim
+    );
 
     // untuk mendapatkan data kehadiran dosen
     @GET("dosen/find-all-by-status-kehadiran")
