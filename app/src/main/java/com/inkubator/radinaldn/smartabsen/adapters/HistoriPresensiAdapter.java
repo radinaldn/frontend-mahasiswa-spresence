@@ -2,6 +2,7 @@ package com.inkubator.radinaldn.smartabsen.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import com.inkubator.radinaldn.smartabsen.config.ServerConfig;
 import com.inkubator.radinaldn.smartabsen.models.PresensiDetail;
 import com.inkubator.radinaldn.smartabsen.rests.ApiClient;
 import com.inkubator.radinaldn.smartabsen.rests.ApiInterface;
+import com.inkubator.radinaldn.smartabsen.utils.SessionManager;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -25,9 +27,11 @@ import java.util.ArrayList;
 public class HistoriPresensiAdapter extends RecyclerView.Adapter<HistoriPresensiAdapter.HistoriPresensiViewHolder> {
 
     private Context mContext;
+    SessionManager sessionManager;
 
     private ArrayList<PresensiDetail> dataList;
     private static final String TAG = HistoriPresensiAdapter.class.getSimpleName();
+    private static final String TAG_NIM = "nim";
 
     ApiInterface apiService;
 
@@ -44,6 +48,7 @@ public class HistoriPresensiAdapter extends RecyclerView.Adapter<HistoriPresensi
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         final View view = layoutInflater.inflate(R.layout.histori_presensi_item, parent, false);
 
+        sessionManager = new SessionManager(mContext);
         apiService = ApiClient.getClient().create(ApiInterface.class);
 
         return new HistoriPresensiViewHolder(view);
@@ -51,6 +56,15 @@ public class HistoriPresensiAdapter extends RecyclerView.Adapter<HistoriPresensi
 
     @Override
     public void onBindViewHolder(@NonNull HistoriPresensiViewHolder holder, int position) {
+
+        // pemberian warna pada cardview utk data diri sendiri
+        if (dataList.get(position).getNim().equalsIgnoreCase(sessionManager.getMahasiswaDetail().get(TAG_NIM))){
+            if (dataList.get(position).getStatus().equalsIgnoreCase(PresensiDetail.HADIR)){
+                holder.cv_histori_presensi.setCardBackgroundColor(mContext.getResources().getColor(R.color.colorMint));
+            } else {
+                holder.cv_histori_presensi.setCardBackgroundColor(mContext.getResources().getColor(R.color.colorBitterSweet));
+            }
+        }
 
         holder.tv_id_presensi.setText(dataList.get(position).getIdPresensi());
         ID_PRESENSI = dataList.get(position).getIdPresensi();
@@ -71,7 +85,11 @@ public class HistoriPresensiAdapter extends RecyclerView.Adapter<HistoriPresensi
         }
 
         holder.tv_proses.setText(dataList.get(position).getProses());
-        Picasso.with(holder.itemView.getContext()).load(ServerConfig.IMAGE_PATH+"mahasiswa/"+dataList.get(position).getFoto_mahasiswa()).resize(100,100).into(holder.iv_avatar);
+        Picasso.with(holder.itemView.getContext()).load(ServerConfig.IMAGE_PATH+"mahasiswa/"+dataList.get(position).getFoto_mahasiswa())
+                .fit()
+                .placeholder(R.drawable.dummy_ava)
+                .error(R.drawable.dummy_ava)
+                .into(holder.iv_avatar);
         if(dataList.get(position).getProses().equalsIgnoreCase("Pending")){
             holder.iv_proses.setImageResource(R.drawable.ic_on_proggres);
         } else {
@@ -86,11 +104,13 @@ public class HistoriPresensiAdapter extends RecyclerView.Adapter<HistoriPresensi
 
     public class HistoriPresensiViewHolder extends RecyclerView.ViewHolder {
 
+        private CardView cv_histori_presensi;
         private TextView tv_id_presensi, tv_nim, tv_nama_mahasiswa, tv_status, tv_lat, tv_lng, tv_waktu, tv_jarak, tv_proses;
         private ImageView iv_avatar, iv_proses;
 
         public HistoriPresensiViewHolder(View itemView) {
             super(itemView);
+            cv_histori_presensi = itemView.findViewById(R.id.cv_histori_presensi_item);
             tv_id_presensi = itemView.findViewById(R.id.tv_id_presensi);
             tv_nim = itemView.findViewById(R.id.tv_nim);
             tv_nama_mahasiswa = itemView.findViewById(R.id.tv_nama);

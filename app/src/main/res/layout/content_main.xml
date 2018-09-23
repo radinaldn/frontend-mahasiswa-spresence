@@ -60,6 +60,21 @@
                         android:textColor="@color/colorWhite"
                         />
 
+                    <TextView
+
+                        style="@style/TextAppearance.AppCompat.Large"
+                        android:id="@+id/tv_libur"
+                        android:fontFamily="@font/roboto_slab_regilar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="8dp"
+                        android:textStyle="bold"
+                        android:text="Libur! Hubungi kosma jika ada jadwal kuliah pengganti."
+                        android:layout_gravity="center"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorAquaDark"
+                        />
+
 
                             <android.support.v7.widget.RecyclerView
                                 android:layout_margin="5dp"

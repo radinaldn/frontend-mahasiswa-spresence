@@ -9,6 +9,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class PresensiDetail {
 
+    public static final String HADIR = "Hadir";
+    public static final String TIDAK_HADIR = "Tidak Hadir";
+
     public PresensiDetail(String idPresensi, String nim, String namaMahasiswa, String status, String lat, String lng, String waktu, String jarak, String proses, String foto_mahasiswa) {
         this.idPresensi = idPresensi;
         this.nim = nim;

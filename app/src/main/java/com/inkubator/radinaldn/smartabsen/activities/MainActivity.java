@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     ImageView imageView;
-    TextView tvname, tvjurusan;
+    TextView tvname, tvjurusan, tv_libur;
     private ProgressDialog pDialog;
 
     String nim, imei, nama, foto, id_fakultas, id_jurusan, nama_jurusan;
@@ -173,6 +173,7 @@ public class MainActivity extends AppCompatActivity
         tvname.setText(sessionManager.getMahasiswaDetail().get(TAG_NAMA));
         tvjurusan.setText("(" +sessionManager.getMahasiswaDetail().get(TAG_NIM)+ ")");
 
+        tv_libur = findViewById(R.id.tv_libur);
 
         /*
         Isi data Kuliah hari ini
@@ -181,7 +182,6 @@ public class MainActivity extends AppCompatActivity
         recyclerView = findViewById(R.id.recyclerView);
 
         NIM = sessionManager.getMahasiswaDetail().get(TAG_NIM);
-
 
         getKuliahHariIni(NIM);
 
@@ -265,7 +265,8 @@ public class MainActivity extends AppCompatActivity
                 if (response.isSuccessful()){
                     System.out.println("ada data : "+response.body().getMengambil().size());
                     if (response.body().getMengambil().size() > 0){
-
+                        // hilangkan pesan libur
+                        tv_libur.setVisibility(View.GONE);
                         mengambilArrayList = new ArrayList<>();
                         for (int i = 0; i < response.body().getMengambil().size(); i++) {
                             Log.i(TAG, "onResponse: ada matakuliah hari ini : "+response.body().getMengambil().get(i).getNamaMatakuliah());
@@ -292,6 +293,8 @@ public class MainActivity extends AppCompatActivity
 
                     } else {
 //                        Toast.makeText(getApplicationContext(), "Tidak ada kuliah hari ini hohoho", Toast.LENGTH_SHORT).show();
+                        // munculkan pesan libur
+                        tv_libur.setVisibility(View.VISIBLE);
                     }
                 } else {
 //                    Toast.makeText(getApplicationContext(), "Error : "+response.errorBody().toString(), Toast.LENGTH_LONG).show();

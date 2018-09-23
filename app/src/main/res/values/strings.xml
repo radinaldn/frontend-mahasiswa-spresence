@@ -111,5 +111,7 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="about_message">Smart Presence v1.0 Copyright ©INKUBATOR 2018</string>
+    <string name="batal">Batal</string>
+    <string name="upload">Upload</string>
 
 </resources>
