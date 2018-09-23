@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_height="match_parent"
@@ -9,12 +14,21 @@
 
     <ImageView
         android:id="@+id/iv_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_margin="5dp"
-        android:contentDescription="@string/app_name"
-        app:srcCompat="@drawable/attend_logo"/>
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:src="@drawable/sc_get_id_bot"
+        />
+
+    <TextView
+        android:id="@+id/tv_size"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:textAlignment="center"
+        android:textColor="@color/RedBootstrap"
+        android:text="Ukuran gambar : 35 KB"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -40,3 +54,4 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 </LinearLayout>
+</ScrollView>

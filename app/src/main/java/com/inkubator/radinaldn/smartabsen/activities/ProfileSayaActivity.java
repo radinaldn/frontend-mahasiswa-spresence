@@ -2,24 +2,24 @@ package com.inkubator.radinaldn.smartabsen.activities;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -28,6 +28,11 @@ import android.widget.Toast;
 
 import com.inkubator.radinaldn.smartabsen.R;
 import com.inkubator.radinaldn.smartabsen.config.ServerConfig;
+import com.inkubator.radinaldn.smartabsen.responses.ResponseUpdateImei;
+import com.inkubator.radinaldn.smartabsen.rests.ApiClient;
+import com.inkubator.radinaldn.smartabsen.rests.ApiInterface;
+import com.inkubator.radinaldn.smartabsen.utils.ConnectionDetector;
+import com.inkubator.radinaldn.smartabsen.utils.HttpFileUpload;
 import com.inkubator.radinaldn.smartabsen.utils.SessionManager;
 import com.squareup.picasso.Picasso;
 
@@ -39,9 +44,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
-import java.util.Date;
 
-import static com.inkubator.radinaldn.smartabsen.fragments.HistoriPresensiFragment.ID_PRESENSI;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ProfileSayaActivity extends AppCompatActivity {
 
@@ -49,6 +55,7 @@ public class ProfileSayaActivity extends AppCompatActivity {
     private Dialog myDialog;
     private SessionManager sessionManager;
     private ImageView iv_foto, iv_image;
+    private ProgressDialog pDialog;
     public static final String TAG_NIM = "nim";
     public static final String TAG_IMEI = "imei";
     public static final String TAG_NAMA = "nama";
@@ -58,7 +65,9 @@ public class ProfileSayaActivity extends AppCompatActivity {
     private String nim, imei, nama, foto, id_telegram, jk, fname;
     private TextView tv_nama, tv_nim, tv_imei, tv_id_telegram, tv_jk;
     public static final String IMAGE_DIRECTORY = "GaleriSmartPresence";
-    
+    public String finalPhotoName;
+
+    private TextView tv_size;
     private Button bt_batal, bt_upload;
 
     private Uri imageCaptureUri;
@@ -67,11 +76,17 @@ public class ProfileSayaActivity extends AppCompatActivity {
     private Boolean upflag = false;
     private Bitmap bmp;
     private File sourceFile;
+    // max allowed size for uploading is 100 KB
+    private int max_allowed_size;
+    private ConnectionDetector cd;
+    ApiInterface apiService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_saya);
+
+        apiService = ApiClient.getClient().create(ApiInterface.class);
 
         // create SmartPresence folder
         file = new File(Environment.getExternalStorageDirectory()
@@ -80,7 +95,11 @@ public class ProfileSayaActivity extends AppCompatActivity {
             file.mkdirs();
         }
 
+        // max allowed file size for uploading
+        max_allowed_size = 150;
         sessionManager = new SessionManager(this);
+        finalPhotoName = sessionManager.getMahasiswaDetail().get(SessionManager.NIM)+".jpg";
+        cd = new ConnectionDetector(this);
 
         nim = sessionManager.getMahasiswaDetail().get(TAG_NIM);
         imei = sessionManager.getMahasiswaDetail().get(TAG_IMEI);
@@ -98,6 +117,7 @@ public class ProfileSayaActivity extends AppCompatActivity {
         tv_jk = findViewById(R.id.tv_jk);
 
         Picasso.with(getApplicationContext()).load(ServerConfig.IMAGE_PATH+"/mahasiswa/"+foto).into(iv_foto);
+
         tv_nim.setText(nim);
         tv_nama.setText(nama);
         tv_imei.setText(imei);
@@ -120,7 +140,7 @@ public class ProfileSayaActivity extends AppCompatActivity {
         collapsingToolbar.setTitle(nama);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        final String[] listItems = {"Dari Kamera", "Dari Galeri"};
+        final String[] listItems = {"Dari Galeri"};
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -129,16 +149,15 @@ public class ProfileSayaActivity extends AppCompatActivity {
                 mBuilder.setItems(listItems, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Toast.makeText(getApplicationContext(), "i = "+i, Toast.LENGTH_SHORT).show();
                         dialogInterface.dismiss();
 
-                        // jika dari kamera
+                        // jika dari galeri
                         if (i==0){
-                            openCamera();
-
-                        } else {
-                            // jika dari galeri
                             openGaleri();
+
+//                        } else {
+//                            // jika dari kamera
+//                            //openCamera();
                         }
                     }
                 });
@@ -152,7 +171,7 @@ public class ProfileSayaActivity extends AppCompatActivity {
 
     private void openCamera() {
 
-        destFile = new File(file, sessionManager.getMahasiswaDetail().get(TAG_NIM)+".png");
+        destFile = new File(file, finalPhotoName);
         imageCaptureUri = Uri.fromFile(destFile);
 
         Intent intentCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -162,6 +181,7 @@ public class ProfileSayaActivity extends AppCompatActivity {
     }
 
     private void openGaleri(){
+
 
         Intent intent = new Intent(Intent.ACTION_PICK);
 
@@ -186,9 +206,10 @@ public class ProfileSayaActivity extends AppCompatActivity {
                          */
                         myDialog = new Dialog(ProfileSayaActivity.this);
                         myDialog.setContentView(R.layout.dialog_popup_image);
-                        myDialog.setTitle("QR CODE");
+                        myDialog.setTitle(R.string.foto_profil);
                         bt_batal = myDialog.findViewById(R.id.bt_batal);
                         bt_upload = myDialog.findViewById(R.id.bt_upload);
+                        tv_size = myDialog.findViewById(R.id.tv_size);
                         iv_image = myDialog.findViewById(R.id.iv_image);
                         Picasso.with(getApplicationContext()).load("file:///storage/emulated/0/"+IMAGE_DIRECTORY+"/"+fname).resize(100, 100).into(iv_image);
 
@@ -199,25 +220,26 @@ public class ProfileSayaActivity extends AppCompatActivity {
                             @Override
                             public void onClick(View v) {
                                 myDialog.cancel();
+
                             }
                         });
-                        
+
                         bt_upload.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                
+
                             }
                         });
 
                         myDialog.show();
-                        
+
                         bmp = decodeFile(destFile);
 
                         if (destFile.exists()) destFile.delete();
 
                         try {
                             FileOutputStream out = new FileOutputStream(destFile);
-                            bmp.compress(Bitmap.CompressFormat.PNG, 10, out);
+                            bmp.compress(Bitmap.CompressFormat.JPEG, 50, out);
                             out.flush();
                             out.close();
 
@@ -240,9 +262,14 @@ public class ProfileSayaActivity extends AppCompatActivity {
 //                        iv_image.setImageURI(uriPhoto);
 
                         sourceFile = new File(getPathFromGooglePhotosUri(uriPhoto));
-                        fname = sessionManager.getMahasiswaDetail().get(TAG_NIM)+".png";
+                        fname = finalPhotoName;
 
                         destFile = new File(file, fname);
+
+                        // size in KB
+                        final int[] file_size = {Integer.parseInt(String.valueOf(sourceFile.length() / 1024))};
+
+                        System.out.println("file size : "+ file_size[0]);
 
                         Log.d(TAG, "Source File Path :" + sourceFile);
 
@@ -262,8 +289,16 @@ public class ProfileSayaActivity extends AppCompatActivity {
                         myDialog.setTitle("QR CODE");
                         bt_batal = myDialog.findViewById(R.id.bt_batal);
                         bt_upload = myDialog.findViewById(R.id.bt_upload);
+                        tv_size = myDialog.findViewById(R.id.tv_size);
                         iv_image = myDialog.findViewById(R.id.iv_image);
-                        Picasso.with(getApplicationContext()).load("file:///storage/emulated/0/"+IMAGE_DIRECTORY+"/"+fname).resize(100, 100).into(iv_image);
+                        Picasso.with(getApplicationContext()).load("file:///storage/emulated/0/"+IMAGE_DIRECTORY+"/"+fname).into(iv_image);
+
+                        tv_size.setText(file_size[0] +" KB");
+                        if (file_size[0] <=max_allowed_size){
+                            tv_size.setTextColor(getResources().getColor(R.color.GreenBootstrap));
+                        } else {
+                            tv_size.setTextColor(getResources().getColor(R.color.RedBootstrap));
+                        }
 
                         bt_batal.setEnabled(true);
                         bt_upload.setEnabled(true);
@@ -272,12 +307,24 @@ public class ProfileSayaActivity extends AppCompatActivity {
                             @Override
                             public void onClick(View v) {
                                 myDialog.cancel();
+
                             }
                         });
 
                         bt_upload.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                if (file_size[0] !=0 && file_size[0] <= max_allowed_size){
+                                    // jika ada koneksi internet, lakukan upload
+                                    if (cd.isConnectingToInternet()){
+                                        new UploadFoto().execute();
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "Maaf, anda tidak memiliki koneksi internet.", Toast.LENGTH_LONG).show();
+                                    }
+
+                                } else {
+                                    Toast.makeText(getApplicationContext(), "Maaf, ukuran max foto adalah 100KB.\nDisarankan menggunakan foto profil Telegram.", Toast.LENGTH_LONG).show();
+                                }
 
                             }
                         });
@@ -337,7 +384,7 @@ public class ProfileSayaActivity extends AppCompatActivity {
 
         Log.d(TAG, "Width :" + b.getWidth() + " Height :" + b.getHeight());
 
-        fname = sessionManager.getMahasiswaDetail().get(TAG_NIM)+".png";
+        fname = sessionManager.getMahasiswaDetail().get(TAG_NIM)+".jpg";
         destFile = new File(file, fname);
 
         return b;
@@ -405,6 +452,69 @@ public class ProfileSayaActivity extends AppCompatActivity {
         }
         if (destination != null) {
             destination.close();
+        }
+    }
+
+    class UploadFoto extends AsyncTask<String, String, String> {
+
+        @Override
+        protected void onPreExecute() {
+            pDialog = new ProgressDialog(ProfileSayaActivity.this);
+            pDialog.setCancelable(false);
+            pDialog.setMessage("Mohon menunggu, sedang mengupload gambar..");
+            pDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            try {
+                // Set your file path here
+                FileInputStream fstrm = new FileInputStream(destFile);
+                // Set your server page url (and the file title/description)
+                HttpFileUpload hfu = new HttpFileUpload(ServerConfig.UPLOAD_FOTO_ENDPOINT, "ftitle", "fdescription", finalPhotoName);
+                upflag = hfu.Send_Now(fstrm);
+
+            } catch (FileNotFoundException e) {
+                // Error: File not found
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            if (upflag) {
+                // update record foto from database
+                apiService.mahasiswaUpdateFoto(sessionManager.getMahasiswaDetail().get(sessionManager.NIM), finalPhotoName).enqueue(new Callback<ResponseUpdateImei>() {
+                    @Override
+                    public void onResponse(Call<ResponseUpdateImei> call, Response<ResponseUpdateImei> response) {
+                        if (response.isSuccessful()){
+                            if (response.body().getCode().equalsIgnoreCase("200")){
+                                Toast.makeText(getApplicationContext(), "Upload gambar berhasil dan "+response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                                sessionManager.updateFoto(finalPhotoName);
+
+                            } else {
+
+                                Toast.makeText(getApplicationContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseUpdateImei> call, Throwable t) {
+                        t.getLocalizedMessage();
+                    }
+                });
+                // selesaikan activity
+                finish();
+                restartThisActivity();
+            } else {
+                Toast.makeText(getApplicationContext(), "Sayangnya gambar tidak bisa diupload..", Toast.LENGTH_LONG).show();
+            }
+        }
+
+        private void restartThisActivity() {
+            startActivity(getIntent().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
         }
     }
 }

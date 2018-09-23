@@ -112,4 +112,13 @@ public interface ApiInterface {
             @Field("nim") String nim,
             @Field("id_telegram") String id_telegram
     );
+
+    @FormUrlEncoded
+    @POST("mahasiswa/update-foto")
+    Call<ResponseUpdateImei> mahasiswaUpdateFoto(
+            @Field("nim") String nim,
+            @Field("foto") String foto
+    );
+
+
 }

@@ -67,7 +67,6 @@ public class ScanQRCodeActivity extends AppCompatActivity  {
     private Barcode barcodeResult;
     ApiInterface apiService;
 
-    ProgressDialog progressDialog;
     String latittude, longitude, altitude, bestProvider;
     Location lastLocation;
     Criteria criteria = new Criteria();
@@ -266,6 +265,14 @@ public class ScanQRCodeActivity extends AppCompatActivity  {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (pDialog.isShowing()){
+            pDialog.dismiss();
+        }
+    }
+
+    @Override
     public void onBackPressed() {
         super.onBackPressed();
     }
@@ -310,7 +317,9 @@ public class ScanQRCodeActivity extends AppCompatActivity  {
         System.out.println("myLat : "+myLat);
         System.out.println("myLng : "+myLng);
 
-        nyalakanScanner(String.valueOf(myLat), String.valueOf(myLng));
+        if (myLat!=null && myLng != null){
+            nyalakanScanner(String.valueOf(myLat), String.valueOf(myLng));
+        }
     }
 
     public static boolean isMockSettingsON(Context context) {

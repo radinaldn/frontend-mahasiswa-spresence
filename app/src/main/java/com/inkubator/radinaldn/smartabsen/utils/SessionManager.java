@@ -52,12 +52,15 @@ public class SessionManager {
         editor.commit();
     }
 
-    public void updateLoginSession(String id_telegram){
+    public void updateIdTelegram(String id_telegram){
         editor.putString(ID_TELEGRAM, id_telegram);
         editor.commit();
     }
 
-
+    public void updateFoto(String foto){
+        editor.putString(FOTO, foto);
+        editor.commit();
+    }
 
     public HashMap<String, String> getMahasiswaDetail(){
         HashMap<String,String> mahasiswa = new HashMap<>();

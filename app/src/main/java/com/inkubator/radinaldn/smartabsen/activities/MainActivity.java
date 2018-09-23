@@ -691,7 +691,7 @@ public class MainActivity extends AppCompatActivity
 
                                         // update session
                                         if (!id_telegram.isEmpty()){
-                                            sessionManager.updateLoginSession(id_telegram);
+                                            sessionManager.updateIdTelegram(id_telegram);
                                             // open tele smart presence bot
                                             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/smart_presence_bot"));
                                             startActivity(browserIntent);
