@@ -325,38 +325,48 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // check apakah GPS aktif?
-                isGPSEnabled = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-                if (!isGPSEnabled) {
 
-                    AlertDialog.Builder confirmBox = new AlertDialog.Builder(MainActivity.this);
-                    confirmBox.setTitle("GPS belum diaktifkan");
-                    confirmBox.setIcon(R.drawable.ic_gps_off_black_24dp);
-                    confirmBox.setMessage("Apakah anda ingin mengaktifkan GPS ?\nMengaktifkan GPS akan membantu aplikasi memperoleh lokasi yang akurat.");
-                    confirmBox.setCancelable(false);
+                // check mock location
+                if (!isMockSettingsON(MainActivity.this)) {
+                    //   a. if (mockLocation()) onBackPressed() with message "You wanna try to cheating dude ? turn off your fake gps and be honest"
 
-                    confirmBox.setPositiveButton("Ya", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Toast.makeText(getApplicationContext(), "Aktifkan GPS terlebih dahulu dan coba lagi", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    confirmBox.setNegativeButton("Tidak", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            // do scan qr code here
-                            // sebelum masuk ke ScanningQRCodeActivity.class lakukan pengecekkan apakah user menghidupkan lokasi palsu?
-                            Intent i = new Intent(getApplicationContext(), ScanQRCodeActivity.class);
-                            startActivity(i);
-                        }
-                    });
 
-                    AlertDialog alertDialogKonfirmasi = confirmBox.create();
-                    alertDialogKonfirmasi.show();
+                    // check apakah GPS aktif?
+                    isGPSEnabled = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+                    if (!isGPSEnabled) {
 
+                        AlertDialog.Builder confirmBox = new AlertDialog.Builder(MainActivity.this);
+                        confirmBox.setTitle("GPS belum diaktifkan");
+                        confirmBox.setIcon(R.drawable.ic_gps_off_black_24dp);
+                        confirmBox.setMessage("Apakah anda ingin mengaktifkan GPS ?\nMengaktifkan GPS akan membantu aplikasi memperoleh lokasi yang akurat.");
+                        confirmBox.setCancelable(false);
+
+                        confirmBox.setPositiveButton("Ya", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Toast.makeText(getApplicationContext(), "Aktifkan GPS terlebih dahulu dan coba lagi", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        confirmBox.setNegativeButton("Tidak", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do scan qr code here
+                                // sebelum masuk ke ScanningQRCodeActivity.class lakukan pengecekkan apakah user menghidupkan lokasi palsu?
+                                Intent i = new Intent(getApplicationContext(), ScanQRCodeActivity.class);
+                                startActivity(i);
+                            }
+                        });
+
+                        AlertDialog alertDialogKonfirmasi = confirmBox.create();
+                        alertDialogKonfirmasi.show();
+
+                    } else {
+                        Intent i = new Intent(getApplicationContext(), ScanQRCodeActivity.class);
+                        startActivity(i);
+                    }
                 } else {
-                    Intent i = new Intent(getApplicationContext(), ScanQRCodeActivity.class);
-                    startActivity(i);
+                    // upps mock location is turn on
+                    Toast.makeText(getApplicationContext(), "Harap matikan fitur mock location anda.\nAplikasi tidak mengizinkan pemindaian qr-code bila terdeteksi menggunakan lokasi palsu.", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -713,5 +723,15 @@ public class MainActivity extends AppCompatActivity
 
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+    }
+
+    // checking mock location
+    public static boolean isMockSettingsON(Context context) {
+        // returns true if mock location enabled, false if not enabled.
+        if (Settings.Secure.getString(context.getContentResolver(),
+                Settings.Secure.ALLOW_MOCK_LOCATION).equals("0"))
+            return false;
+        else
+            return true;
     }
 }

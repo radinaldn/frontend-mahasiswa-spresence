@@ -12,6 +12,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -41,6 +42,8 @@ import com.karumi.dexter.listener.PermissionRequestErrorListener;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.single.PermissionListener;
 
+import org.ankit.gpslibrary.MyTracker;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +58,9 @@ import retrofit2.Response;
 
 public class ScanQRCodeActivity extends AppCompatActivity  {
 
-
+    MyTracker tracker;
+    Double myLat, myLng;
+    private ProgressDialog pDialog;
 
     private static final String TAG_ID_PRESENSI = "id_presensi";
     MaterialBarcodeScanner materialBarcodeScanner;
@@ -76,51 +81,6 @@ public class ScanQRCodeActivity extends AppCompatActivity  {
     private static final String TAG_NIM = "nim";
     ConnectionDetector connectionDetector;
 
-    private class MyLocationListener implements LocationListener {
-
-        @Override
-        public void onLocationChanged(Location location) {
-
-                if (location != null) {
-
-                    latittude = String.valueOf(location.getLatitude());
-                    longitude = String.valueOf(location.getLongitude());
-                    altitude = String.valueOf(location.getAltitude());
-
-                    // jika belum pernah scan
-                    if (!alreadyStartScanning) {
-                        // status scan update menjadi true
-                        alreadyStartScanning =true;
-                    }
-                }
-
-        }
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-            String strStatus = "";
-            switch (status){
-                case LocationProvider.AVAILABLE:
-                    strStatus = "tersedia";
-                case LocationProvider.OUT_OF_SERVICE:
-                    strStatus = "sedang dalam perbaikan";
-                case LocationProvider.TEMPORARILY_UNAVAILABLE:
-                    strStatus = "tidak tersedia untuk sementara";
-            }
-
-            Toast.makeText(getBaseContext(), provider + " " +strStatus, Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onProviderEnabled(String provider) {
-            Toast.makeText(getBaseContext(), "Provider: " +provider+ " di-aktifkan", Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onProviderDisabled(String provider) {
-            Toast.makeText(getBaseContext(), "Provider: " +provider+ " di-nonaktifkan", Toast.LENGTH_SHORT).show();
-        }
-    }
 
     private void nyalakanScanner(final String myLat, final String myLng){
 
@@ -266,64 +226,6 @@ public class ScanQRCodeActivity extends AppCompatActivity  {
         return formattedResult;
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        bestProvider = locationManager.getBestProvider(criteria, true);
-        if (bestProvider!=null) {
-            Log.d("LocationProviders", "Best provider is : " + bestProvider);
-        }
-
-        Dexter.withActivity(this)
-                .withPermissions(
-                        Manifest.permission.ACCESS_COARSE_LOCATION,
-                        Manifest.permission.ACCESS_FINE_LOCATION)
-                .withListener(new MultiplePermissionsListener() {
-                    //@SuppressLint("MissingPermission")
-                    @Override
-                    public void onPermissionsChecked(MultiplePermissionsReport report) {
-                        // check if all permissions are granted
-                        if (report.areAllPermissionsGranted()) {
-                            Toast.makeText(getApplicationContext(), "Location permissions are granted!", Toast.LENGTH_SHORT).show();
-                            lastLocation = locationManager.getLastKnownLocation(bestProvider);
-                            if (lastLocation != null) Log.d("LocationProviders", lastLocation.toString());
-                            locationManager.requestLocationUpdates(
-                                    // aktifkan ambil dari satelit
-                                    // LocationManager.GPS_PROVIDER,
-                                    // aktifkan ambil dari BTS
-                                    // LocationManager.NETWORK_PROVIDER,
-                                    //
-                                                   bestProvider,
-                                    0,
-                                    0,
-                                    locationListener
-                            );
-                        }
-
-                        // check for permanent denial of any permission
-                        if (report.isAnyPermissionPermanentlyDenied()) {
-                            // show alert dialog navigating to Settings
-                            showSettingsDialog();
-                        }
-                    }
-
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
-                        token.continuePermissionRequest();
-                    }
-                }).
-                withErrorListener(new PermissionRequestErrorListener() {
-                    @Override
-                    public void onError(DexterError error) {
-                        Toast.makeText(getApplicationContext(), "Error occurred! " + error.toString(), Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .onSameThread()
-                .check();
-        // end
-    }
-
     /**
      * Showing Alert Dialog with Settings option
      * Navigates user to app settings
@@ -361,7 +263,6 @@ public class ScanQRCodeActivity extends AppCompatActivity  {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        locationManager.removeUpdates(locationListener);
     }
 
     @Override
@@ -373,6 +274,7 @@ public class ScanQRCodeActivity extends AppCompatActivity  {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        tracker=new MyTracker(this);
         connectionDetector = new ConnectionDetector(ScanQRCodeActivity.this);
 
         sessionManager = new SessionManager(this);
@@ -380,77 +282,36 @@ public class ScanQRCodeActivity extends AppCompatActivity  {
         scanResultSub = new ArrayList();
 
         // for location service
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        locationListener = new MyLocationListener();
-
-        // start dialog
-        progressDialog = new ProgressDialog(this, R.style.MyAlertDialogStyle);
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage("Sedang membaca lokasi ...");
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progressDialog.show();
-
-
-        List<String> locationProviders = locationManager.getAllProviders();
-        for (String provider : locationProviders){
-            Log.d("LocationProviders", provider);
-        }
-
-        criteria.setAccuracy(Criteria.ACCURACY_FINE);
-        criteria.setAltitudeRequired(true);
-        criteria.setBearingRequired(false);
-        criteria.setCostAllowed(true);
-        criteria.setPowerRequirement(Criteria.POWER_HIGH);
 
         // 1. get camera permission from user
         // 2. check if user turn on on the mock location
         if (isMockSettingsON(this)){
             //   a. if (mockLocation()) onBackPressed() with message "You wanna try to cheating dude ? turn off your fake gps and be honest"
             onBackPressed();
-            Toast.makeText(getApplicationContext(), "Mock location anda menyala", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Harap matikan fitur mock location anda.\nAplikasi tidak mengizinkan pemindaian qr-code bila terdeteksi menggunakan lokasi palsu.", Toast.LENGTH_LONG).show();
             finish();
         }
 
-        Toast.makeText(getApplicationContext(), "Mulai menunggu 10 detik ke depan", Toast.LENGTH_SHORT).show();
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //Do something after 10s
-                Toast.makeText(getApplicationContext(), "10 detik berakhir", Toast.LENGTH_SHORT).show();
-
-                //jika sudah menunggu dan tidak null
-                if (latittude!=null){
-                    if (progressDialog.isShowing()){
-                        progressDialog.dismiss();
-                    }
-                    Toast.makeText(getApplicationContext(), "lat, lng, alt terbaru berhasil didapatkan, nyalakanScanner()", Toast.LENGTH_SHORT).show();
-                    nyalakanScanner(latittude, longitude);
-                } else if (latittude==null){
-                    // cek apakah lokasi terakhir yg didapatkan != null
-                    if (lastLocation != null){
-                        if (progressDialog.isShowing()){
-                            progressDialog.dismiss();
-                        }
-                        Toast.makeText(getApplicationContext(), "lastLocation berhasil didapatkan, nyalakanScanner()", Toast.LENGTH_SHORT).show();
-                        nyalakanScanner(String.valueOf(lastLocation.getLatitude()), String.valueOf(lastLocation.getLongitude()));
-                        System.out.println("Latitude dari lastLocation : "+lastLocation.getLatitude());
-                        System.out.println("Longitude dari lastLocation : "+lastLocation.getLongitude());
-                    } else {
-                        Toast.makeText(getApplicationContext(), "lastLocation juga null, coba lagi", Toast.LENGTH_LONG).show();
-                     //   onBackPressed();
-
-
-
-
-                    }
-                }
-
-            }
-        }, 10000);
+        // Dapatkan lokasi dan nyalakan scanner
+        new GetMyLocation().execute();
     }
 
+    void getLocation(){
 
+        myLat = tracker.getLatitude();
+        myLng = tracker.getLongitude();
+
+        System.out.println(tracker.getLatitude());
+
+        System.out.println(tracker.getLongitude());
+        System.out.println(tracker.getLocation());
+
+        String latlng = myLat+","+myLng;
+        System.out.println("myLat : "+myLat);
+        System.out.println("myLng : "+myLng);
+
+        nyalakanScanner(String.valueOf(myLat), String.valueOf(myLng));
+    }
 
     public static boolean isMockSettingsON(Context context) {
         // returns true if mock location enabled, false if not enabled.
@@ -459,6 +320,40 @@ public class ScanQRCodeActivity extends AppCompatActivity  {
             return false;
         else
             return true;
+    }
+
+    class GetMyLocation extends AsyncTask<String, String, String> {
+
+        @Override
+        protected void onPreExecute() {
+
+            pDialog = new ProgressDialog(ScanQRCodeActivity.this);
+            pDialog.setCancelable(false);
+            pDialog.setMessage("Mohon menunggu, sedang mengambil lokasi..");
+            pDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            if (tracker==null){
+                tracker = new MyTracker(ScanQRCodeActivity.this);
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String file_url) {
+            if (pDialog.isShowing()) {
+                pDialog.dismiss();
+            }
+            getLocation();
+            Toast.makeText(getApplicationContext(), "Selesai mendapatkan lokasi ", Toast.LENGTH_LONG).show();
+            // selesaikan activity
+
+        }
+
     }
 
 }
