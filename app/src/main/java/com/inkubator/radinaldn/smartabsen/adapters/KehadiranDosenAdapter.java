@@ -55,7 +55,10 @@ public class KehadiranDosenAdapter extends RecyclerView.Adapter<KehadiranDosenAd
                 .fit()
                 .placeholder(R.drawable.dummy_ava)
                 .error(R.drawable.dummy_ava)
+                .centerCrop()
+                .fit()
                 .into(holder.iv_foto);
+
         holder.tv_nip.setText(dataList.get(position).getNip());
 
         holder.tv_nama_dosen.setText(dataList.get(position).getNama_dosen());

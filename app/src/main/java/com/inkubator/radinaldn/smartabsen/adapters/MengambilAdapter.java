@@ -111,6 +111,17 @@ public class MengambilAdapter extends RecyclerView.Adapter<MengambilAdapter.Meng
             bt_detail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+//                    // redirect to HistoriMengajarActitivty
+//                    Intent intent = new Intent(itemView.getContext(), HistoriMengajarActivity.class);
+//                    intent.putExtra(TAG_ID_MENGAJAR, tv_id_mengajar.getText());
+//                    intent.putExtra(TAG_NAMA_DOSEN, tv_nama_dosen.getText());
+//                    itemView.getContext().startActivity(intent);
+                }
+            });
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
                     // redirect to HistoriMengajarActitivty
                     Intent intent = new Intent(itemView.getContext(), HistoriMengajarActivity.class);
                     intent.putExtra(TAG_ID_MENGAJAR, tv_id_mengajar.getText());

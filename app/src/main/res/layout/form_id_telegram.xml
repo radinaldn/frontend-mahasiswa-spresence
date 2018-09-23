@@ -1,6 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<ScrollView android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
 
-</android.support.constraint.ConstraintLayout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/custom_dialog_layout_design_user_input"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:text="*Dengan menambahkan ID Telegram di bawah ini, maka anda setuju untuk mengaktifkan pemberitahuan melalui Telegram.."
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <ImageView
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:src="@drawable/sc_get_id_bot"
+        />
+    <TextView
+        android:text="*Copy Chat ID yang didapat dari bot, kemudian paste ke kolom berikut."
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/et_id_telegram"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_fiber_pin_black_24dp"
+            android:hint="ID Telegram. Contoh : 3567890"
+            android:drawablePadding="5dp"
+            android:inputType="number"
+            android:textColor="@color/textColorPrimary"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+
+</LinearLayout>
+</ScrollView>

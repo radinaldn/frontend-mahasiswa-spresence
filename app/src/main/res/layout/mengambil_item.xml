@@ -101,7 +101,7 @@
 
 
                     <Button
-
+android:visibility="invisible"
                         android:layout_marginLeft="5dp"
                         android:id="@+id/bt_detail"
                         android:layout_width="wrap_content"

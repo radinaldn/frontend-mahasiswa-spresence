@@ -113,5 +113,7 @@
     <string name="about_message">Smart Presence v1.0 Copyright ©INKUBATOR 2018</string>
     <string name="batal">Batal</string>
     <string name="upload">Upload</string>
+    <string name="button_for_input_voice">Button for input voice</string>
+    <string name="tambah_id_telegram">Tambah ID Telegram</string>
 
 </resources>

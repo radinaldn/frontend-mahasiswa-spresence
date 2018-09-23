@@ -89,6 +89,8 @@ public class HistoriPresensiAdapter extends RecyclerView.Adapter<HistoriPresensi
                 .fit()
                 .placeholder(R.drawable.dummy_ava)
                 .error(R.drawable.dummy_ava)
+                .centerCrop()
+                .fit()
                 .into(holder.iv_avatar);
         if(dataList.get(position).getProses().equalsIgnoreCase("Pending")){
             holder.iv_proses.setImageResource(R.drawable.ic_on_proggres);

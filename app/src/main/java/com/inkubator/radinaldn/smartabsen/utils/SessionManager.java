@@ -52,6 +52,13 @@ public class SessionManager {
         editor.commit();
     }
 
+    public void updateLoginSession(String id_telegram){
+        editor.putString(ID_TELEGRAM, id_telegram);
+        editor.commit();
+    }
+
+
+
     public HashMap<String, String> getMahasiswaDetail(){
         HashMap<String,String> mahasiswa = new HashMap<>();
         mahasiswa.put(NIM, sharedPreferences.getString(NIM,null));

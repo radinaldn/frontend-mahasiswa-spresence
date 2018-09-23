@@ -7,6 +7,7 @@ import com.inkubator.radinaldn.smartabsen.responses.ResponseKehadiranDosen;
 import com.inkubator.radinaldn.smartabsen.responses.ResponseLogin;
 import com.inkubator.radinaldn.smartabsen.responses.ResponseMengambil;
 import com.inkubator.radinaldn.smartabsen.responses.ResponsePresensiDetail;
+import com.inkubator.radinaldn.smartabsen.responses.ResponseUpdateImei;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -25,6 +26,12 @@ public interface ApiInterface {
     /*
     API Mahasiswa
      */
+
+    // untuk mendapatkan data kehadiran dosen berdasarkan inputan nama
+    @GET("dosen/kehadiran-dosen-find-by-name")
+    Call<ResponseKehadiranDosen> dosenKehadiranFindByName(
+            @Query("name") String name
+    );
 
     // untuk mendapatkan data histori perkuliah by nim and date
     @GET("presensi-detail/find-by-nim-and-date")
@@ -74,6 +81,13 @@ public interface ApiInterface {
             @Field("imei") String imei
     );
 
+    @FormUrlEncoded
+    @POST("mahasiswa/login-nim-and-password")
+    Call<ResponseLogin> loginNimAndPassword(
+            @Field("username") String nim,
+            @Field("password") String password
+    );
+
     // untuk mengirim presensi
     @FormUrlEncoded
     @POST("presensi-detail/isi-presensi")
@@ -83,5 +97,19 @@ public interface ApiInterface {
             @Field("lat") String lat,
             @Field("lng") String lng,
             @Field("jarak") String jarak
+    );
+
+    @FormUrlEncoded
+    @POST("mahasiswa/update-imei")
+    Call<ResponseUpdateImei> mahasiswaUpdateImei(
+            @Field("nim") String nim,
+            @Field("imei") String imei
+    );
+
+    @FormUrlEncoded
+    @POST("mahasiswa/update-id-telegram")
+    Call<ResponseUpdateImei> mahasiswaUpdateIdTelegram(
+            @Field("nim") String nim,
+            @Field("id_telegram") String id_telegram
     );
 }
