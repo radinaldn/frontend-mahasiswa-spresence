@@ -23,6 +23,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/MAPS_API_KEY"/>
+
         <activity
             android:name=".activities.LoginActivity"
             android:label="@string/app_name"
@@ -59,10 +64,12 @@
             android:name=".activities.ProfileSayaActivity"
             android:label="@string/title_activity_profile_saya"
             android:theme="@style/noAnimTheme" />
+        <activity
+            android:name=".activities.HistoriPerkuliahanActivity"
+            android:theme="@style/noAnimTheme" />
 
-        <activity android:name=".activities.HistoriPerkuliahanActivity"
-            android:theme="@style/noAnimTheme"
-            />
+        <activity android:name=".activities.DimanaSayaActivity"
+            android:theme="@style/noAnimTheme"/>
     </application>
 
 </manifest>

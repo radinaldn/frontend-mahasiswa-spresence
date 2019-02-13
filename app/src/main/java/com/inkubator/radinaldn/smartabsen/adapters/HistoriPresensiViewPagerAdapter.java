@@ -30,13 +30,13 @@ public class HistoriPresensiViewPagerAdapter extends FragmentPagerAdapter {
         return mFragmenTitleList.size();
     }
 
-    public void addFragment(Fragment fragment, String title){
+    public void addFragment(Fragment fragment, String title) {
         mFragmentList.add(fragment);
         mFragmenTitleList.add(title);
     }
 
     @Override
-    public CharSequence getPageTitle(int posistion){
+    public CharSequence getPageTitle(int posistion) {
         return mFragmenTitleList.get(posistion);
     }
 }

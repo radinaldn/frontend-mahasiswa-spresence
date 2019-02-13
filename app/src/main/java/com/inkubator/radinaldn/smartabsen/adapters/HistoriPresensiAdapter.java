@@ -58,7 +58,10 @@ public class HistoriPresensiAdapter extends RecyclerView.Adapter<HistoriPresensi
     public void onBindViewHolder(@NonNull HistoriPresensiViewHolder holder, int position) {
 
         // pemberian warna pada cardview utk data diri sendiri
+        System.out.println("dataList.get(position).getNim() : "+dataList.get(position).getNim());
+        System.out.println("sessionManager.getMahasiswaDetail.get(TAG_NIM) : "+sessionManager.getMahasiswaDetail().get(TAG_NIM));
         if (dataList.get(position).getNim().equalsIgnoreCase(sessionManager.getMahasiswaDetail().get(TAG_NIM))){
+            System.out.println(dataList.get(position).getNim()+" == "+sessionManager.getMahasiswaDetail().get(TAG_NIM));
             if (dataList.get(position).getStatus().equalsIgnoreCase(PresensiDetail.HADIR)){
                 holder.cv_histori_presensi.setCardBackgroundColor(mContext.getResources().getColor(R.color.colorMint));
             } else {
@@ -73,6 +76,17 @@ public class HistoriPresensiAdapter extends RecyclerView.Adapter<HistoriPresensi
         holder.tv_waktu.setText(dataList.get(position).getWaktu());
         holder.tv_jarak.setText(dataList.get(position).getJarak()+" Meter");
         holder.tv_status.setText(dataList.get(position).getStatus());
+
+        int jarak = Integer.parseInt(dataList.get(position).getJarak());
+        if (jarak >0 && jarak <= 50){
+            holder.tv_jarak.setTextColor(mContext.getResources().getColor(R.color.GreenBootstrap));
+        } else if (jarak > 50 && jarak <100) {
+            holder.tv_jarak.setTextColor(mContext.getResources().getColor(R.color.orange));
+        } else if (jarak > 100){
+            holder.tv_jarak.setTextColor(mContext.getResources().getColor(R.color.RedBootstrap));
+        } else {
+            holder.tv_jarak.setTextColor(mContext.getResources().getColor(R.color.colorBlueJeansDark));
+        }
 
         switch (dataList.get(position).getStatus()){
             case "Hadir":

@@ -30,13 +30,13 @@ public class KehadiranDosenViewPagerAdapter extends FragmentPagerAdapter {
         return mFragmentTitleList.size();
     }
 
-    public void addFragment(Fragment fragment, String title){
+    public void addFragment(Fragment fragment, String title) {
         mFragmentList.add(fragment);
         mFragmentTitleList.add(title);
     }
 
     @Override
-    public CharSequence getPageTitle(int position){
+    public CharSequence getPageTitle(int position) {
         return mFragmentTitleList.get(position);
     }
 }

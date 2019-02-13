@@ -9,7 +9,6 @@ import com.inkubator.radinaldn.smartabsen.responses.ResponseMengambil;
 import com.inkubator.radinaldn.smartabsen.responses.ResponsePresensiDetail;
 import com.inkubator.radinaldn.smartabsen.responses.ResponseUpdateImei;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;

@@ -5,46 +5,54 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:visible="false"
             android:id="@+id/absen"
             android:icon="@drawable/ic_school"
-            android:title="Absen" />
+            android:title="Absen"
+            android:visible="false" />
         <item
             android:id="@+id/jadwal_kuliah"
             android:icon="@drawable/ic_clock"
-            android:title="Jadwal Kuliah" />
+            android:title="@string/jadwal_kuliah" />
         <item
             android:id="@+id/kehadiran_dosen"
             android:icon="@drawable/ic_check_dosen"
-            android:title="Kehadiran Dosen" />
+            android:title="@string/kehadiran_dosen" />
         <item
             android:id="@+id/histori_saya"
             android:icon="@drawable/ic_calendar"
-            android:title="Histori Perkuliahan" />
+            android:title="@string/histori_perkuliahan" />
         <item
-            android:visible="false"
             android:id="@+id/berita"
             android:icon="@drawable/ic_content"
-            android:title="Berita Terbaru" />
+            android:title="Berita Terbaru"
+            android:visible="false" />
+        <item
+            android:id="@+id/dimana_saya"
+            android:icon="@drawable/ic_my_location"
+            android:title="@string/dimana_saya" />
     </group>
 
-    <item android:title="Lainnya">
+    <item android:title="@string/lainnya">
         <menu>
 
             <item
-                android:icon="@drawable/ic_settings_black_24dp"
                 android:id="@+id/nav_setting"
-                android:title="Pengaturan"/>
+                android:icon="@drawable/ic_settings_black_24dp"
+                android:title="@string/action_settings" />
             <item
-                android:visible="false"
                 android:id="@+id/nav_help"
                 android:icon="@drawable/help"
-                android:title="Smart Absen FAQ" />
+                android:title="Smart Absen FAQ"
+                android:visible="false" />
 
             <item
                 android:id="@+id/nav_about"
                 android:icon="@drawable/info"
-                android:title="Tentang" />
+                android:title="@string/tentang" />
+            <item
+                android:id="@+id/nav_lapor_bug"
+                android:icon="@drawable/ic_bug_report"
+                android:title="@string/laporkan_bug_error" />
         </menu>
 
     </item>

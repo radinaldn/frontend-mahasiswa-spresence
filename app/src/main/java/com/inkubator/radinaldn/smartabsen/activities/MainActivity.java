@@ -1,7 +1,5 @@
 package com.inkubator.radinaldn.smartabsen.activities;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,34 +16,32 @@ import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.support.design.widget.FloatingActionButton;
-
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.stetho.Stetho;
+import com.inkubator.radinaldn.smartabsen.R;
 import com.inkubator.radinaldn.smartabsen.adapters.MengambilAdapter;
 import com.inkubator.radinaldn.smartabsen.config.ServerConfig;
-import com.inkubator.radinaldn.smartabsen.R;
 import com.inkubator.radinaldn.smartabsen.models.KehadiranDosen;
-import com.inkubator.radinaldn.smartabsen.models.Mahasiswa;
 import com.inkubator.radinaldn.smartabsen.models.Mengambil;
 import com.inkubator.radinaldn.smartabsen.responses.ResponseKehadiranDosen;
 import com.inkubator.radinaldn.smartabsen.responses.ResponseMengambil;
@@ -53,13 +49,6 @@ import com.inkubator.radinaldn.smartabsen.responses.ResponseUpdateImei;
 import com.inkubator.radinaldn.smartabsen.rests.ApiClient;
 import com.inkubator.radinaldn.smartabsen.rests.ApiInterface;
 import com.inkubator.radinaldn.smartabsen.utils.SessionManager;
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.MultiplePermissionsReport;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.DexterError;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.PermissionRequestErrorListener;
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -75,7 +64,7 @@ public class MainActivity extends AppCompatActivity
 
     ImageView imageView;
     TextView tvname, tvjurusan, tv_libur;
-    FloatingActionButton fab, fab_mic;
+    FloatingActionButton fab_cam, fab_mic;
     private ProgressDialog pDialog;
     private TextToSpeech tts;
     String RESULT_STT; // for SpeechToText result
@@ -119,16 +108,13 @@ public class MainActivity extends AppCompatActivity
     LayoutInflater inflater;
     View dialogView;
 
-    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // do permission for all
-        requestAllPermission();
         setContentView(R.layout.activity_main);
 
         sessionManager = new SessionManager(this);
-        if(!sessionManager.isLoggedIn()){
+        if (!sessionManager.isLoggedIn()) {
             Intent i = new Intent(MainActivity.this, LoginActivity.class);
             // agar tidak balik ke activity ini lagi
             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY);
@@ -138,17 +124,16 @@ public class MainActivity extends AppCompatActivity
 
 
         // check ID Telegram User
-        if (sessionManager.getMahasiswaDetail().get(SessionManager.ID_TELEGRAM)!=null && sessionManager.getMahasiswaDetail().get(SessionManager.ID_TELEGRAM).equalsIgnoreCase("0")){
+        if (sessionManager.getMahasiswaDetail().get(SessionManager.ID_TELEGRAM) != null && sessionManager.getMahasiswaDetail().get(SessionManager.ID_TELEGRAM).equalsIgnoreCase("0")) {
             // open tele smart presence bot
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/get_id_bot"));
             startActivity(browserIntent);
             showFormIdTelegram(sessionManager.getMahasiswaDetail().get(SessionManager.NIM));
-
         }
 
         apiService = ApiClient.getClient().create(ApiInterface.class);
 
-        manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE );
+        manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         isGPSEnabled = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -156,7 +141,7 @@ public class MainActivity extends AppCompatActivity
 
         Stetho.initializeWithDefaults(this);
 
-        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab_cam = (FloatingActionButton) findViewById(R.id.fab);
         fab_mic = findViewById(R.id.fab_mic);
         tts = new TextToSpeech(this, this);
 
@@ -209,7 +194,7 @@ public class MainActivity extends AppCompatActivity
                 }
 
                 // displaying the first match
-                if (matches != null){
+                if (matches != null) {
 
                     Toast.makeText(getApplicationContext(), matches.get(0), Toast.LENGTH_LONG).show();
                     RESULT_STT = matches.get(0);
@@ -219,59 +204,66 @@ public class MainActivity extends AppCompatActivity
                      */
 
                     //split result
-                    String [] hasils = RESULT_STT.split(" ");
+                    String[] hasils = RESULT_STT.split(" ");
 
                     // jika hasils[0] == di || hasil[0] == dimana
-                    if (hasils[0].equalsIgnoreCase("di") || RESULT_STT.equalsIgnoreCase(TAG_dimana)){
+                    if (hasils[0].equalsIgnoreCase("di") || RESULT_STT.equalsIgnoreCase(TAG_dimana)) {
 
                         String nama_dosen = null;
 
-                        if (hasils[0].equalsIgnoreCase("di")){
-                            if (hasils[2].equals("pak")){
+                        if (hasils[0].equalsIgnoreCase("di")) {
+                            if (hasils[2].equals("pak")) {
                                 String str_new = RESULT_STT.replaceFirst("di mana pak ", "");
                                 nama_dosen = str_new;
 
-                            } if(hasils[2].equals("Pak")){
+                            }
+                            if (hasils[2].equals("Pak")) {
                                 String str_new = RESULT_STT.replaceFirst("di mana Pak ", "");
                                 nama_dosen = str_new;
 
-                            } if (hasils[2].equalsIgnoreCase("bu")){
+                            }
+                            if (hasils[2].equalsIgnoreCase("bu")) {
                                 String str_new = RESULT_STT.replaceFirst("di mana bu ", "");
                                 nama_dosen = str_new;
-                            } if (hasils[2].equalsIgnoreCase("Bu")) {
+                            }
+                            if (hasils[2].equalsIgnoreCase("Bu")) {
                                 String str_new = RESULT_STT.replaceFirst("di mana Bu ", "");
                                 nama_dosen = str_new;
                             }
 
-                        } else if (hasils[0].equalsIgnoreCase("dimana")){
-                            if (hasils[1].equalsIgnoreCase("pak")){
+                        } else if (hasils[0].equalsIgnoreCase("dimana")) {
+                            if (hasils[1].equalsIgnoreCase("pak")) {
                                 String str_new = RESULT_STT.replaceFirst("dimana pak", "");
                                 nama_dosen = str_new;
 
-                            } if (hasils[1].equalsIgnoreCase("Pak")) {
+                            }
+                            if (hasils[1].equalsIgnoreCase("Pak")) {
                                 String str_new = RESULT_STT.replaceFirst("dimana Pak", "");
                                 nama_dosen = str_new;
 
-                            } if (hasils[1].equalsIgnoreCase("bu")){
+                            }
+                            if (hasils[1].equalsIgnoreCase("bu")) {
                                 String str_new = RESULT_STT.replaceFirst("dimana bu", "");
                                 nama_dosen = str_new;
-                            } if (hasils[1].equalsIgnoreCase("Bu")){
+                            }
+                            if (hasils[1].equalsIgnoreCase("Bu")) {
                                 String str_new = RESULT_STT.replaceFirst("dimana Bu", "");
                                 nama_dosen = str_new;
                             }
                         }
 
-                        if (nama_dosen!=null){
+                        if (nama_dosen != null) {
                             //Jika berhasil dan sesuai, cari data kehadiran dosen
                             final String finalNama_dosen = nama_dosen;
                             apiService.dosenKehadiranFindByName(nama_dosen).enqueue(new Callback<ResponseKehadiranDosen>() {
                                 @Override
                                 public void onResponse(Call<ResponseKehadiranDosen> call, Response<ResponseKehadiranDosen> response) {
+                                    System.out.println("response : " + response.toString());
                                     if (response.isSuccessful()) {
 
                                         System.out.println(response.toString());
                                         System.out.println(response.body().toString());
-                                        if (response.body().getKehadiranDosen().size()==1){
+                                        if (response.body().getKehadiranDosen().size() == 1) {
 
                                             List<KehadiranDosen> hasil_req = response.body().getKehadiranDosen();
                                             String nama_dosen = hasil_req.get(0).getNama_dosen();
@@ -279,17 +271,17 @@ public class MainActivity extends AppCompatActivity
                                             String nama_kota = hasil_req.get(0).getNama_kota();
                                             String last_update = hasil_req.get(0).getLast_update();
 
-                                            RESULT_TTS = finalNama_dosen+" yang ditemukan "+nama_dosen+" dengan status "+status_kehadiran+", berada di "+nama_kota+" terakhir update "+last_update;
+                                            RESULT_TTS = finalNama_dosen + " yang ditemukan " + nama_dosen + " dengan status " + status_kehadiran + ", berada di " + nama_kota + " terakhir update " + last_update;
                                             speakOut();
-                                        } else if (response.body().getKehadiranDosen().size() > 1){
-                                            Toast.makeText(getApplicationContext(), "Data " + finalNama_dosen +" ada "+response.body().getKehadiranDosen().size(), Toast.LENGTH_LONG).show();
+                                        } else if (response.body().getKehadiranDosen().size() > 1) {
+                                            Toast.makeText(getApplicationContext(), "Data " + finalNama_dosen + " ada " + response.body().getKehadiranDosen().size(), Toast.LENGTH_LONG).show();
                                         } else {
                                             Toast.makeText(getApplicationContext(), "Tidak ada  Data " + finalNama_dosen, Toast.LENGTH_LONG).show();
                                         }
 
 
                                     } else {
-                                        Toast.makeText(getApplicationContext(), "Tidak dapat memuat data "+finalNama_dosen, Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getApplicationContext(), "Tidak dapat memuat data " + finalNama_dosen, Toast.LENGTH_LONG).show();
                                     }
                                 }
 
@@ -301,12 +293,12 @@ public class MainActivity extends AppCompatActivity
                         }
 
 
-
                     } else {
-                        Toast.makeText(getApplicationContext(), "MainActivity.java line 219 :\n"+ RESULT_STT, Toast.LENGTH_LONG).show();
+//                        Toast.makeText(getApplicationContext(), "MainActivity.java line 219 :\n"+ RESULT_STT, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.terjadi_kesalahan), Toast.LENGTH_LONG).show();
                     }
 
-                }else {
+                } else {
                     Toast.makeText(getApplicationContext(), matches.get(0), Toast.LENGTH_LONG).show();
                 }
             }
@@ -322,7 +314,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        fab.setOnClickListener(new View.OnClickListener() {
+        fab_cam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -336,18 +328,20 @@ public class MainActivity extends AppCompatActivity
                     if (!isGPSEnabled) {
 
                         AlertDialog.Builder confirmBox = new AlertDialog.Builder(MainActivity.this);
-                        confirmBox.setTitle("GPS belum diaktifkan");
+                        confirmBox.setTitle(getResources().getString(R.string.gps_is_not_activated));
                         confirmBox.setIcon(R.drawable.ic_gps_off_black_24dp);
-                        confirmBox.setMessage("Apakah anda ingin mengaktifkan GPS ?\nMengaktifkan GPS akan membantu aplikasi memperoleh lokasi yang akurat.");
+                        confirmBox.setMessage(getResources().getString(R.string.do_you_wanna_turn_on_gps));
                         confirmBox.setCancelable(false);
 
-                        confirmBox.setPositiveButton("Ya", new DialogInterface.OnClickListener() {
+                        confirmBox.setPositiveButton(getResources().getString(R.string.ya), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Toast.makeText(getApplicationContext(), "Aktifkan GPS terlebih dahulu dan coba lagi", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(getApplicationContext(), "Aktifkan GPS terlebih dahulu dan coba lagi", Toast.LENGTH_SHORT).show();
+                                Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                startActivity(i);
                             }
                         });
-                        confirmBox.setNegativeButton("Tidak", new DialogInterface.OnClickListener() {
+                        confirmBox.setNegativeButton(getResources().getString(R.string.tidak), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 // do scan qr code here
@@ -366,7 +360,7 @@ public class MainActivity extends AppCompatActivity
                     }
                 } else {
                     // upps mock location is turn on
-                    Toast.makeText(getApplicationContext(), "Harap matikan fitur mock location anda.\nAplikasi tidak mengizinkan pemindaian qr-code bila terdeteksi menggunakan lokasi palsu.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.mohon_non_aktifkan_fitur_lokasi_tiruan_aplikasi_tidak_mengizinkan), Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -380,7 +374,7 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        Log.i(TAG, "onCreate: "+sessionManager.getMahasiswaDetail().get(TAG_NAMA));
+        Log.i(TAG, "onCreate: " + sessionManager.getMahasiswaDetail().get(TAG_NAMA));
 
         View header = navigationView.getHeaderView(0);
 
@@ -390,15 +384,16 @@ public class MainActivity extends AppCompatActivity
         tvjurusan = header.findViewById(R.id.tvJurusan);
 
         Picasso.with(getApplicationContext())
-                .load(serverConfig.IMAGE_PATH+"/mahasiswa/"+sessionManager.getMahasiswaDetail().get(TAG_FOTO))
+                .load(serverConfig.IMAGE_PATH + "/mahasiswa/" + sessionManager.getMahasiswaDetail().get(TAG_FOTO))
                 .resize(100, 100)
                 .placeholder(R.drawable.dummy_ava)
                 .error(R.drawable.dummy_ava)
                 .centerCrop()
                 .into(imageView);
 
+
         tvname.setText(sessionManager.getMahasiswaDetail().get(TAG_NAMA));
-        tvjurusan.setText("(" +sessionManager.getMahasiswaDetail().get(TAG_NIM)+ ")");
+        tvjurusan.setText("(" + sessionManager.getMahasiswaDetail().get(TAG_NIM) + ")");
 
         tv_libur = findViewById(R.id.tv_libur);
 
@@ -413,16 +408,16 @@ public class MainActivity extends AppCompatActivity
         getKuliahHariIni(NIM);
 
 
-        // Action click fab mic
+        // Action click fab_cam mic
         fab_mic.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()){
+                switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         //  onPressed
                         mSpeechRecognizer.startListening(mSpeechRecognizerIntent);
                         fab_mic.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.textColorSecondary)));
-                        Toast.makeText(getApplicationContext(), "Silahkan berbicara", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.silahkan_berbicara), Toast.LENGTH_SHORT).show();
                         return true;
 
                     case MotionEvent.ACTION_UP:
@@ -435,75 +430,8 @@ public class MainActivity extends AppCompatActivity
                 return false;
             }
         });
-        // End of Action click fab mic
+        // End of Action click fab_cam mic
 
-    }
-
-    private void requestAllPermission() {
-        Dexter.withActivity(this)
-                .withPermissions(
-                        Manifest.permission.CAMERA,
-                        Manifest.permission.ACCESS_COARSE_LOCATION,
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .withListener(new MultiplePermissionsListener() {
-                    @Override
-                    public void onPermissionsChecked(MultiplePermissionsReport report) {
-                        // check if all permissions are granted
-                        if (report.areAllPermissionsGranted()) {
-                            //Toast.makeText(getApplicationContext(), "All permissions are granted!", Toast.LENGTH_SHORT).show();
-                        }
-
-                        // check for permanent denial of any permission
-                        if (report.isAnyPermissionPermanentlyDenied()) {
-                            // show alert dialog navigating to Settings
-                            showSettingsDialog();
-                        }
-                    }
-
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
-                        token.continuePermissionRequest();
-                    }
-                }).
-                withErrorListener(new PermissionRequestErrorListener() {
-                    @Override
-                    public void onError(DexterError error) {
-                        Toast.makeText(getApplicationContext(), "Error occurred! " + error.toString(), Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .onSameThread()
-                .check();
-    }
-
-    private void showSettingsDialog() {
-        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(MainActivity.this);
-        builder.setTitle("Need Permissions");
-        builder.setMessage("This app needs permission to use this feature. You can grant them in app settings.");
-        builder.setPositiveButton("GOTO SETTINGS", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-                openSettings();
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-        builder.show();
-
-    }
-
-    // navigating user to app settings
-    private void openSettings() {
-        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        Uri uri = Uri.fromParts("package", getPackageName(), null);
-        intent.setData(uri);
-        startActivityForResult(intent, 101);
     }
 
     private void getKuliahHariIni(String nim) {
@@ -512,9 +440,9 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onResponse(Call<ResponseMengambil> call, Response<ResponseMengambil> response) {
                 System.out.println(response.toString());
-                if (response.isSuccessful()){
-                    System.out.println("ada data : "+response.body().getMengambil().size());
-                    if (response.body().getMengambil().size() > 0){
+                if (response.isSuccessful()) {
+                    System.out.println("ada data : " + response.body().getMengambil().size());
+                    if (response.body().getMengambil().size() > 0) {
                         // hilangkan pesan libur
                         tv_libur.setVisibility(View.GONE);
                         mengambilArrayList = new ArrayList<>();
@@ -532,13 +460,14 @@ public class MainActivity extends AppCompatActivity
                         tv_libur.setVisibility(View.VISIBLE);
                     }
                 } else {
-//                    Toast.makeText(getApplicationContext(), "Error : "+response.errorBody().toString(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.terjadi_kesalahan), Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseMengambil> call, Throwable t) {
                 t.getLocalizedMessage();
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.gagal_terhubung_ke_server), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -575,8 +504,6 @@ public class MainActivity extends AppCompatActivity
 
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
 
-
-
             // redirect to login page
             sessionManager.logoutMahasiswa();
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY);
@@ -604,7 +531,10 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.histori_saya) {
             Intent intent = new Intent(MainActivity.this, HistoriPerkuliahanActivity.class);
             startActivity(intent);
-        } else if (id == R.id.nav_setting){
+        } else if (id == R.id.dimana_saya) {
+            Intent intent = new Intent(MainActivity.this, DimanaSayaActivity.class);
+            startActivity(intent);
+        } else if (id == R.id.nav_setting) {
             Intent intent = new Intent(MainActivity.this, ProfileSayaActivity.class);
             startActivity(intent);
 
@@ -616,10 +546,15 @@ public class MainActivity extends AppCompatActivity
             alertDialog.setTitle(R.string.license_title);
 
             // Setting Dialog Message
-            alertDialog.setMessage(getString(R.string.about_message));
+            alertDialog.setMessage(getString(R.string.license_app));
 
             // Setting Icon to Dialog
             alertDialog.setIcon(R.drawable.attend_logo);
+            // Showing Alert Message
+            alertDialog.show();
+        } else if (id == R.id.nav_lapor_bug) {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/radinaldn/"));
+            startActivity(browserIntent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -630,7 +565,7 @@ public class MainActivity extends AppCompatActivity
     // onInit for TextToSpeech
     @Override
     public void onInit(int status) {
-        if (status == TextToSpeech.SUCCESS){
+        if (status == TextToSpeech.SUCCESS) {
             int result = tts.setLanguage(new Locale("id", "ID"));
 
             if (result == TextToSpeech.LANG_MISSING_DATA
@@ -656,7 +591,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         //shutdown tts
-        if (tts!=null){
+        if (tts != null) {
             tts.stop();
             tts.shutdown();
         }
@@ -677,7 +612,7 @@ public class MainActivity extends AppCompatActivity
 
         alertDialogBuilder
                 .setCancelable(false)
-                .setPositiveButton("Simpan", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getResources().getString(R.string.simpan), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         final String id_telegram = et_id_telegram.getText().toString();
@@ -685,28 +620,31 @@ public class MainActivity extends AppCompatActivity
                         apiService.mahasiswaUpdateIdTelegram(str_nim, id_telegram).enqueue(new Callback<ResponseUpdateImei>() {
                             @Override
                             public void onResponse(Call<ResponseUpdateImei> call, Response<ResponseUpdateImei> response) {
-                                if (response.isSuccessful()){
-                                    if (response.body().getCode().equalsIgnoreCase("200")){
+                                if (response.isSuccessful()) {
+                                    if (response.body().getCode().equalsIgnoreCase("200")) {
                                         Toast.makeText(getApplicationContext(), response.body().getMessage(), Toast.LENGTH_LONG).show();
 
                                         // update session
-                                        if (!id_telegram.isEmpty()){
+                                        if (!id_telegram.isEmpty()) {
                                             sessionManager.updateIdTelegram(id_telegram);
                                             // open tele smart presence bot
                                             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/smart_presence_bot"));
                                             startActivity(browserIntent);
                                         } else {
-                                            Toast.makeText(getApplicationContext(), "Anda belum mengisi kolom ID Telegram", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getApplicationContext(), R.string.anda_belum_mengisi_kolom_id_telegram, Toast.LENGTH_SHORT).show();
                                         }
 
                                     } else {
                                         Toast.makeText(getApplicationContext(), response.body().getMessage(), Toast.LENGTH_LONG).show();
                                     }
+                                } else {
+                                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.terjadi_kesalahan), Toast.LENGTH_SHORT).show();
                                 }
                             }
 
                             @Override
                             public void onFailure(Call<ResponseUpdateImei> call, Throwable t) {
+                                Toast.makeText(getApplicationContext(), getResources().getString(R.string.gagal_terhubung_ke_server), Toast.LENGTH_SHORT).show();
                                 t.getLocalizedMessage();
                             }
                         });
@@ -714,7 +652,7 @@ public class MainActivity extends AppCompatActivity
                     }
                 })
 
-                .setNegativeButton("Batal", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getResources().getString(R.string.batal), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();

@@ -5,116 +5,90 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="log_out">Log out</string>
     <string name="action_settings">Settings</string>
-    <string name="msg">Mohon terima semua permisi</string>
-    <string name="license_title">License</string>
-    <string name="jadwal_kuliah">Jadwal Kuliah</string>
-    <string name="histori_mengajar">Histori Mengajar</string>
-    <string name="konfirmasi_presensi">KONFIRMASI</string>
-    <string name="qr_code">QR CODE</string>
-    <string name="histori_pertemuan">Histori Pertemuan</string>
-    <string name="daftar_mahasiswa">Daftar Mahasiswa</string>
+    <string name="jadwal_kuliah">Course Schedule</string>
 
-    <string name="allow">Allow</string>
-    <string name="deny">Deny</string>
-    <string name="camera_pemission_never_ask">Camera permission was denied with never ask again. Please allow permission manually!!</string>
-    <string name="camera_permission_denied">Camera permission denied by user</string>
-    <string name="camera_permission_rational">Camera permission is needed to show the camera preview.</string>
-    <string name="daftar_kehadiran_dosen">Daftar Kehadiran Dosen</string>
-    <string name="title_activity_profile_saya">ProfileSayaActivity</string>
-    <string name="large_text">
-        "Material is the metaphor.\n\n"
+    <string name="histori_pertemuan">Meeting History</string>
+    <string name="license_app">Developed by @radinaldn \nCopyright ©INKUBATOR 2018</string>
 
-        "A material metaphor is the unifying theory of a rationalized space and a system of motion."
-        "The material is grounded in tactile reality, inspired by the study of paper and ink, yet "
-        "technologically advanced and open to imagination and magic.\n"
-        "Surfaces and edges of the material provide visual cues that are grounded in reality. The "
-        "use of familiar tactile attributes helps users quickly understand affordances. Yet the "
-        "flexibility of the material creates new affordances that supercede those in the physical "
-        "world, without breaking the rules of physics.\n"
-        "The fundamentals of light, surface, and movement are key to conveying how objects move, "
-        "interact, and exist in space and in relation to each other. Realistic lighting shows "
-        "seams, divides space, and indicates moving parts.\n\n"
-
-        "Bold, graphic, intentional.\n\n"
-
-        "The foundational elements of print based design typography, grids, space, scale, color, "
-        "and use of imagery guide visual treatments. These elements do far more than please the "
-        "eye. They create hierarchy, meaning, and focus. Deliberate color choices, edge to edge "
-        "imagery, large scale typography, and intentional white space create a bold and graphic "
-        "interface that immerse the user in the experience.\n"
-        "An emphasis on user actions makes core functionality immediately apparent and provides "
-        "waypoints for the user.\n\n"
-
-        "Motion provides meaning.\n\n"
-
-        "Motion respects and reinforces the user as the prime mover. Primary user actions are "
-        "inflection points that initiate motion, transforming the whole design.\n"
-        "All action takes place in a single environment. Objects are presented to the user without "
-        "breaking the continuity of experience even as they transform and reorganize.\n"
-        "Motion is meaningful and appropriate, serving to focus attention and maintain continuity. "
-        "Feedback is subtle yet clear. Transitions are efﬁcient yet coherent.\n\n"
-
-        "3D world.\n\n"
-
-        "The material environment is a 3D space, which means all objects have x, y, and z "
-        "dimensions. The z-axis is perpendicularly aligned to the plane of the display, with the "
-        "positive z-axis extending towards the viewer. Every sheet of material occupies a single "
-        "position along the z-axis and has a standard 1dp thickness.\n"
-        "On the web, the z-axis is used for layering and not for perspective. The 3D world is "
-        "emulated by manipulating the y-axis.\n\n"
-
-        "Light and shadow.\n\n"
-
-        "Within the material environment, virtual lights illuminate the scene. Key lights create "
-        "directional shadows, while ambient light creates soft shadows from all angles.\n"
-        "Shadows in the material environment are cast by these two light sources. In Android "
-        "development, shadows occur when light sources are blocked by sheets of material at "
-        "various positions along the z-axis. On the web, shadows are depicted by manipulating the "
-        "y-axis only. The following example shows the card with a height of 6dp.\n\n"
-
-        "Resting elevation.\n\n"
-
-        "All material objects, regardless of size, have a resting elevation, or default elevation "
-        "that does not change. If an object changes elevation, it should return to its resting "
-        "elevation as soon as possible.\n\n"
-
-        "Component elevations.\n\n"
-
-        "The resting elevation for a component type is consistent across apps (e.g., FAB elevation "
-        "does not vary from 6dp in one app to 16dp in another app).\n"
-        "Components may have different resting elevations across platforms, depending on the depth "
-        "of the environment (e.g., TV has a greater depth than mobile or desktop).\n\n"
-
-        "Responsive elevation and dynamic elevation offsets.\n\n"
-
-        "Some component types have responsive elevation, meaning they change elevation in response "
-        "to user input (e.g., normal, focused, and pressed) or system events. These elevation "
-        "changes are consistently implemented using dynamic elevation offsets.\n"
-        "Dynamic elevation offsets are the goal elevation that a component moves towards, relative "
-        "to the component’s resting state. They ensure that elevation changes are consistent "
-        "across actions and component types. For example, all components that lift on press have "
-        "the same elevation change relative to their resting elevation.\n"
-        "Once the input event is completed or cancelled, the component will return to its resting "
-        "elevation.\n\n"
-
-        "Avoiding elevation interference.\n\n"
-
-        "Components with responsive elevations may encounter other components as they move between "
-        "their resting elevations and dynamic elevation offsets. Because material cannot pass "
-        "through other material, components avoid interfering with one another any number of ways, "
-        "whether on a per component basis or using the entire app layout.\n"
-        "On a component level, components can move or be removed before they cause interference. "
-        "For example, a floating action button (FAB) can disappear or move off screen before a "
-        "user picks up a card, or it can move if a snackbar appears.\n"
-        "On the layout level, design your app layout to minimize opportunities for interference. "
-        "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
-        "when a user tries to pick up one of cards.\n\n"
-    </string>
-    <string name="about_message">Smart Presence v1.0 Copyright ©INKUBATOR 2018</string>
-    <string name="batal">Batal</string>
     <string name="upload">Upload</string>
     <string name="button_for_input_voice">Button for input voice</string>
-    <string name="tambah_id_telegram">Tambah ID Telegram</string>
-    <string name="foto_profil">Foto Profil</string>
+    <string name="tambah_id_telegram">Add Telegram ID</string>
+    <string name="foto_profil">Profile Picture</string>
+    <string name="permission_granted">Permission granted</string>
+    <string name="anda_terdeteksi_pertama_kali_menggunakan_app">The application detects you are first time using Smart Presence\nHit sign in button one more time</string>
+    <string name="anda_hanya_bisa_login_menggunakan_device_ini">You can only sign in using the current device. Contact the Administrator if you change your smartphone.</string>
+
+    <string name="msg">Please grant all permissions</string>
+    <string name="license_title">Smart Presence Dosen v1.0</string>
+    <string name="title_activity_profile_saya">ProfileSayaActivity</string>
+    <string name="daftar_kehadiran_dosen">Lecturer Attendance List</string>
+    <string name="gps_is_not_activated">GPS has not been activated</string>
+    <string name="do_you_wanna_turn_on_gps">Do you want to activate the GPS? Activating the GPS will help the application get an accurate location.</string>
+    <string name="membaca_lokasi">Obtaining Location…</string>
+    <string name="dimana_saya">Where Am I?</string>
+    <string name="simpan_lokasi">Save Location</string>
+    <string name="MAPS_API_KEY">AIzaSyBHuKQvlibzntuWy52K_Eoix1_MLclUzHA</string>
+    <string name="info">Info</string>
+    <string name="mengalami_kendala_laporkan">Having problems? Ask administrator</string>
+    <string name="hadir">Present</string>
+    <string name="tidak_hadir">Not present</string>
+    <string name="detail">DETAIL</string>
+    <string name="mohon_non_aktifkan_fitur_lokasi_tiruan">Please Disable Allow Mock Location Setting</string>
+    <string name="mohon_non_aktifkan_fitur_lokasi_tiruan_aplikasi_tidak_mengizinkan">Please Disable Allow Mock Location Setting.\nYou are not allow scanning qr-code if it is detected using fake location.</string>
+    <string name="mohon_aktifkan_tanggal_dan_waktu_otomatis">Please activate the Date and Time automatically</string>
+    <string name="update">Update : </string>
+    <string name="tidak_berlaku">(Invalid)\n*Location history only can be used for</string>
+    <string name="berlaku">(Valid)\n*Location history only can be used for</string>
+    <string name="menit">minute(s).</string>
+    <string name="suruh_aplikasi_membaca_lokasi_lagi">Try to locate me again?</string>
+    <string name="ya">Yes</string>
+    <string name="tidak">No</string>
+    <string name="posisi_saya">My position</string>
+    <string name="mohon_menunggu_sedang_mengambil_lokasi">Please wait, obtaining location..</string>
+    <string name="terjadi_kesalahan">Error occurred</string>
+    <string name="gagal_terhubung_ke_server">Failed to connect to server</string>
+    <string name="histori_perkuliahan">Learning History</string>
+    <string name="berhasil_login">Login successful.</string>
+    <string name="gagal_login">Login failed :</string>
+    <string name="silahkan_berbicara">Please speak</string>
+    <string name="senin">Monday</string>
+    <string name="selasa">Tuesday</string>
+    <string name="rabu">Wednesday</string>
+    <string name="kamis">Thursday</string>
+    <string name="jumat">Friday</string>
+    <string name="tidak_bisa_mendapatkan_lokasi">Cannot obtain location</string>
+    <string name="simpan">Save</string>
+    <string name="batal">Cancel</string>
+    <string name="pertemuan">Day</string>
+    <string name="ruangan">Room</string>
+    <string name="kelas">Class </string>
+    <string name="sks"> SKS</string>
+    <string name="pukul">Time </string>
+    <string name="kehadiran_dosen">Lecturer Attendance</string>
+    <string name="lainnya">Others</string>
+    <string name="tentang">About</string>
+    <string name="laporkan_bug_error">Bug/Error Report</string>
+    <string name="sign_in">Sign In</string>
+    <string name="anda_belum_mengisi_kolom_id_telegram">You have not filled in the Telegram ID column</string>
+    <string name="tidak_ada_data">No data</string>
+    <string name="lokasi_ditemukan">Successfully find your location</string>
+    <string name="tidak_dapat_mengikuti_uas">MAY NOT TAKE FINAL EXAM</string>
+    <string name="sisa_jatah">Remaining absent is allowed :</string>
+    <string name="klik_saya_jika_aplikasi_tidak_menyalakan_scanner_qr_code">Click me! If the app does not turn on the QR Code scanner</string>
+    <string name="smart_presence">Smart Presence</string>
+    <string name="kuliah_hari_ini">Today\'s Study Schedule</string>
+    <string name="libur_hubungi_kosma_jika_ada_jadwal_kuliah_pengganti">Free! Contact kosma if there is a substitute class schedule.</string>
+    <string name="nim">Nim</string>
+    <string name="nama">Name</string>
+    <string name="imei">Imei</string>
+    <string name="id_telegram">Telegram ID</string>
+    <string name="jenis_kelamin">Gender</string>
+    <string name="ukuran_gambar_35_kb">Picture size : 35 KB</string>
+    <string name="dengan_menambahkan_id_telegram_di_bawah_ini_maka_anda_setuju_untuk_mengaktifkan_pemberitahuan_melalui_telegram">*By adding the Telegram ID below, you agree to activate notifications via Telegram</string>
+    <string name="copy_chat_id_yang_didapat_dari_bot_kemudian_paste_ke_kolom_berikut">*Copy Chat ID obtained from the bot, then paste it into the following column.</string>
+    <string name="id_telegram_contoh_3567890">Telegram ID. Ex : 3567890</string>
+    <string name="arahkan_kamera_qr_code">Point the camera at the QR Code ...</string>
+    <string name="terjadi_kesalahan_pastikan_koneksi_internet_anda_menyala_dan_coba_lagi">Error occured, make sure you have internet connection and try again.</string>
+
 
 </resources>

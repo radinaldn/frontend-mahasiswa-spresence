@@ -18,8 +18,8 @@ public class ResponsePresensiDetail {
     @Expose
     private List<PresensiDetail> presensiDetail = null;
 
-    public ResponsePresensiDetail(List<PresensiDetail> presensiDetail){
-        this.presensiDetail= presensiDetail;
+    public ResponsePresensiDetail(List<PresensiDetail> presensiDetail) {
+        this.presensiDetail = presensiDetail;
     }
 
     public List<PresensiDetail> getPresensiDetail() {

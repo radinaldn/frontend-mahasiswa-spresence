@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activities.DimanaSayaActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_dimana_saya"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark" />
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_margin="16dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btDimanaSaya"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.39"
+            android:background="@color/colorPrimaryDark"
+            android:drawableLeft="@drawable/ic_gps_fixed_white"
+            android:drawablePadding="5dp"
+            android:text="@string/dimana_saya"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/btSimpanLokasi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="0.39"
+            android:background="@color/buttonColorDisabled"
+            android:drawableLeft="@drawable/ic_add_location_black"
+            android:enabled="false"
+            android:text="@string/membaca_lokasi"
+            android:textColor="#FFF" />
+
+    </LinearLayout>
+
+    <TextView
+
+        android:id="@+id/tvLastLoc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:text="@string/info" />
+
+
+</LinearLayout>

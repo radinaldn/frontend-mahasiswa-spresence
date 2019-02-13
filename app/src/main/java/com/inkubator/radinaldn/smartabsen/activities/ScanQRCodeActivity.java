@@ -17,9 +17,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.edwardvanraak.materialbarcodescanner.MaterialBarcodeScanner;
@@ -45,8 +48,13 @@ import com.karumi.dexter.listener.single.PermissionListener;
 import org.ankit.gpslibrary.MyTracker;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -58,6 +66,7 @@ import retrofit2.Response;
 
 public class ScanQRCodeActivity extends AppCompatActivity  {
 
+    private static final long BATAS_MAKS_SESSION_LOCATION = 5; // in minutes
     MyTracker tracker;
     Double myLat, myLng;
     private ProgressDialog pDialog;
@@ -79,10 +88,12 @@ public class ScanQRCodeActivity extends AppCompatActivity  {
     SessionManager sessionManager;
     private static final String TAG_NIM = "nim";
     ConnectionDetector connectionDetector;
+    View parentLayout;
+    TextView tvClickMe;
 
 
     private void nyalakanScanner(final String myLat, final String myLng){
-
+    Toast.makeText(getApplicationContext(), "myLat : "+myLat+"\nmyLng : "+myLng, Toast.LENGTH_LONG).show();
         Dexter.withActivity(this)
                 .withPermission(Manifest.permission.CAMERA)
                 .withListener(new PermissionListener() {
@@ -95,7 +106,7 @@ public class ScanQRCodeActivity extends AppCompatActivity  {
                                 .withEnableAutoFocus(true)
                                 .withBleepEnabled(true)
                                 .withBackfacingCamera()
-                                .withText("Arahkan kamera ke QR Code ...")
+                                .withText(getString(R.string.arahkan_kamera_qr_code))
                                 .withCenterTracker()
                                 .withResultListener(new MaterialBarcodeScanner.OnResultListener() {
                                     @Override
@@ -130,7 +141,7 @@ public class ScanQRCodeActivity extends AppCompatActivity  {
                                         } else {
 
                                             finish();
-                                            Toast.makeText(getApplicationContext(), "Gagal melakukan presensi, pastikan koneksi internet menyala dan coba lagi.", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getApplicationContext(), R.string.terjadi_kesalahan_pastikan_koneksi_internet_anda_menyala_dan_coba_lagi, Toast.LENGTH_SHORT).show();
                                         }
 
 
@@ -180,7 +191,7 @@ public class ScanQRCodeActivity extends AppCompatActivity  {
                         finish();
                     } else {
 
-                        Toast.makeText(getApplicationContext(), "onResponse error\n['code'] : "+response.body().getStatus()+"\n['message'] : "+response.body().getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), response.body().getMessage(), Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(ScanQRCodeActivity.this, MainActivity.class);
                         Toast.makeText(ScanQRCodeActivity.this, response.body().getMessage(), Toast.LENGTH_LONG).show();
                         //intent.putExtra(TAG_ID_PRESENSI, id_presensi);
@@ -188,13 +199,13 @@ public class ScanQRCodeActivity extends AppCompatActivity  {
                         finish();
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), "onResponse isNotSuccesful : "+response.errorBody(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.terjadi_kesalahan), Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseIsiPresensi> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), "onFailure : "+t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.gagal_terhubung_ke_server), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -267,20 +278,27 @@ public class ScanQRCodeActivity extends AppCompatActivity  {
     @Override
     protected void onResume() {
         super.onResume();
-        if (pDialog.isShowing()){
+        if (pDialog!=null && pDialog.isShowing()){
             pDialog.dismiss();
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setContentView(R.layout.activity_empty_scan);
+
+        tvClickMe = findViewById(R.id.tvClickMe);
+
+        tvClickMe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+             restartActivity();
+            }
+        });
+
+        parentLayout = findViewById(android.R.id.content);
         tracker=new MyTracker(this);
         connectionDetector = new ConnectionDetector(ScanQRCodeActivity.this);
 
@@ -294,13 +312,112 @@ public class ScanQRCodeActivity extends AppCompatActivity  {
         // 2. check if user turn on on the mock location
         if (isMockSettingsON(this)){
             //   a. if (mockLocation()) onBackPressed() with message "You wanna try to cheating dude ? turn off your fake gps and be honest"
-            onBackPressed();
-            Toast.makeText(getApplicationContext(), "Harap matikan fitur mock location anda.\nAplikasi tidak mengizinkan pemindaian qr-code bila terdeteksi menggunakan lokasi palsu.", Toast.LENGTH_LONG).show();
-            finish();
+            showSnacMockLoc();
         }
 
         // Dapatkan lokasi dan nyalakan scanner
-        new GetMyLocation().execute();
+        long selisihMenit=0;
+
+        if (sessionManager.hasLastLocation()&&sessionManager.getMyLocationDetail().get(SessionManager.LAST_LOCATED)!=null){
+            // hitung apakah last update == sudah basi
+            String sessLastLocated = sessionManager.getMyLocationDetail().get(SessionManager.LAST_LOCATED);
+
+            Date currentTime = Calendar.getInstance().getTime();
+            SimpleDateFormat mdformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String saatIni = mdformat.format(currentTime);
+            Date firstDate, secondDate;
+
+            try {
+                firstDate = mdformat.parse(sessLastLocated);
+                secondDate = mdformat.parse(saatIni);
+
+                selisihMenit = secondDate.getTime()-firstDate.getTime();
+
+//                long diffSeconds = selisih / 1000 % 60;
+//                long diffMinutes = selisih / (60 * 1000) % 60;
+//                long diffHours = selisih / (60 * 60 * 1000) % 24;
+//                long diffDays = selisih / (24 * 60 * 60 * 1000);
+
+//                Toast.makeText(getApplicationContext(), diffDays+" hari, "+diffHours+" jam, "+diffMinutes+" menit, "+diffSeconds+" detik", Toast.LENGTH_LONG).show();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+            selisihMenit = selisihMenit / (60 * 1000);
+        }
+
+        //Toast.makeText(getApplicationContext(), "selisihMenit : "+selisihMenit, Toast.LENGTH_LONG).show();
+
+        if (selisihMenit<BATAS_MAKS_SESSION_LOCATION&&sessionManager.getMyLocationDetail().get(SessionManager.LAST_LOCATED)!=null){
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Info");
+            builder.setCancelable(false);
+            builder.setIcon(R.drawable.ic_my_location);
+            builder.setMessage("Anda ingin menggunakan lokasi terakhir yang anda simpan?\nLast update : "+sessionManager.getMyLocationDetail().get(SessionManager.LAST_LOCATED));
+            builder.setPositiveButton("Ya", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    String sessionLat = sessionManager.getMyLocationDetail().get(SessionManager.LATITUDE);
+                    String sessionLng = sessionManager.getMyLocationDetail().get(SessionManager.LONGITUDE);
+
+                    // INGAT!! BELUM ADA FILTER APAKAH LOKASI TERSEBUT SUDAH LEBIH DARI 5 MENIT YANG LALU
+
+                    nyalakanScanner(sessionLat, sessionLng);
+                }
+            });
+
+            builder.setNegativeButton("Tidak", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    new GetMyLocation().execute();
+                }
+            });
+
+            builder.create().show();
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Info");
+            builder.setCancelable(false);
+            builder.setIcon(R.drawable.ic_my_location);
+            builder.setMessage("Maaf, riwayat lokasi yang anda simpan sudah tidak berlaku lagi, anda ingin kembali ke menu \"Dimana Saya?\" ?");
+            builder.setPositiveButton("Ya", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent intent = new Intent(ScanQRCodeActivity.this, DimanaSayaActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY);
+                    startActivity(intent);
+                    finish();
+                }
+            });
+
+            builder.setNegativeButton("Tidak", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    new GetMyLocation().execute();
+                }
+            });
+
+            builder.create().show();
+        }
+
+
+    }
+
+    private void goToMainActivity(){
+        Intent intent = new Intent(ScanQRCodeActivity.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY);
+        startActivity(intent);
+        finish();
+    }
+
+    private void restartActivity(){
+        Intent intent = new Intent(getIntent());
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY);
+        startActivity(intent);
+        finish();
     }
 
     void getLocation(){
@@ -317,8 +434,39 @@ public class ScanQRCodeActivity extends AppCompatActivity  {
         System.out.println("myLat : "+myLat);
         System.out.println("myLng : "+myLng);
 
-        if (myLat!=null && myLng != null){
-            nyalakanScanner(String.valueOf(myLat), String.valueOf(myLng));
+        if (tracker.canGetLocation()&&tracker.getLatitude()!=0){
+            //Toast.makeText(getApplicationContext(), "Bisa dapat lokasi", Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(), "Menggunakan provider : "+tracker.getLocation().getProvider(), Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Menggunakan provider : "+tracker.getLocation().getProvider()+"\nmyLat : "+myLat+"\nmyLng : "+myLng, Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(), "Address : "+tracker.address+"\nCityname : "+tracker.cityName+"\nState : "+tracker.state+"\ncountryName : "+tracker.countryName+"\ncountryCode : "+tracker.countryCode+"\nipAddress : "+tracker.ipAddress+"\nmacAddress : "+tracker.macAddress, Toast.LENGTH_LONG).show();
+
+            nyalakanScanner(String.valueOf(tracker.getLatitude()), String.valueOf(tracker.getLongitude()));
+            Toast.makeText(getApplicationContext(), "Scanner dinyalakan dengan : "+tracker.getLocation().getProvider()+"\nmyLat : "+tracker.getLatitude()+"\nmyLng : "+tracker.getLongitude(), Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(getApplicationContext(), "Tidak bisa dapat lokasi", Toast.LENGTH_LONG).show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Info");
+            builder.setCancelable(false);
+            builder.setMessage("Suruh aplikasi membaca lokasi lagi?");
+            builder.setPositiveButton("Ya", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (isMockSettingsON(ScanQRCodeActivity.this)){
+                        showSnacMockLoc();
+                    } else {
+                        new GetMyLocation().execute();
+                    }
+                }
+            });
+
+            builder.setNegativeButton("Tidak", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    goToMainActivity();
+                }
+            });
+
+            builder.create().show();
         }
     }
 
@@ -363,6 +511,15 @@ public class ScanQRCodeActivity extends AppCompatActivity  {
 
         }
 
+    }
+
+    private void showSnacMockLoc() {
+        Snackbar.make(parentLayout, "Mohon non-aktifkan Fitur Lokasi Tiruan", Snackbar.LENGTH_LONG).setAction("Buka Pengaturan", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(android.provider.Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS));
+            }
+        }).show();
     }
 
 }

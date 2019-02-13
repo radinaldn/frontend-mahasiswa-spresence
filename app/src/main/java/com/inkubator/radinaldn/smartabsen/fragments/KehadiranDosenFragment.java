@@ -13,14 +13,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.inkubator.radinaldn.smartabsen.R;
-
 import com.inkubator.radinaldn.smartabsen.adapters.KehadiranDosenAdapter;
 import com.inkubator.radinaldn.smartabsen.models.KehadiranDosen;
 import com.inkubator.radinaldn.smartabsen.responses.ResponseKehadiranDosen;
-
 import com.inkubator.radinaldn.smartabsen.rests.ApiClient;
 import com.inkubator.radinaldn.smartabsen.rests.ApiInterface;
 import com.inkubator.radinaldn.smartabsen.utils.SessionManager;
@@ -39,7 +36,7 @@ public class KehadiranDosenFragment extends Fragment {
     private RecyclerView recyclerView;
     private KehadiranDosenAdapter adapter;
     private ArrayList<KehadiranDosen> kehadiranDosenArrayList;
-    private static final String ARG_STATUS= "status";
+    private static final String ARG_STATUS = "status";
 
     ApiInterface apiService;
     SwipeRefreshLayout swipeRefreshLayout;
@@ -48,7 +45,7 @@ public class KehadiranDosenFragment extends Fragment {
     SessionManager sessionManager;
     private String status;
 
-    public static KehadiranDosenFragment newInstance(String status_kehadiran){
+    public static KehadiranDosenFragment newInstance(String status_kehadiran) {
         Bundle args = new Bundle();
         args.putString(ARG_STATUS, status_kehadiran);
 
@@ -65,7 +62,7 @@ public class KehadiranDosenFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle extras = getArguments();
-        if( extras != null){
+        if (extras != null) {
             status = extras.getString(ARG_STATUS);
         }
 
@@ -81,10 +78,9 @@ public class KehadiranDosenFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerView);
 
 
-
         swipeRefreshLayout = view.findViewById(R.id.swipe_activity_kehadiran_dosen);
         swipeRefreshLayout.setColorSchemeResources(R.color.refresh, R.color.refresh1, R.color.refresh2);
-        swipeRefreshLayout.setOnRefreshListener( new SwipeRefreshLayout.OnRefreshListener() {
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 Intent intent = getActivity().getIntent();
@@ -105,12 +101,12 @@ public class KehadiranDosenFragment extends Fragment {
         call.enqueue(new Callback<ResponseKehadiranDosen>() {
             @Override
             public void onResponse(Call<ResponseKehadiranDosen> call, Response<ResponseKehadiranDosen> response) {
-                if (response.isSuccessful()){
-                    if(response.body().getKehadiranDosen().size()>0){
+                if (response.isSuccessful()) {
+                    if (response.body().getKehadiranDosen().size() > 0) {
                         kehadiranDosenArrayList = new ArrayList<>();
 
                         for (int i = 0; i < response.body().getKehadiranDosen().size(); i++) {
-                            Log.i(TAG, "onResponse: dosen "+status_kehadiran+ ": "+response.body().getKehadiranDosen().get(i).getNama_dosen());
+                            Log.i(TAG, "onResponse: dosen " + status_kehadiran + ": " + response.body().getKehadiranDosen().get(i).getNama_dosen());
 
                             String str_nip = response.body().getKehadiranDosen().get(i).getNip();
                             String str_nama_dosen = response.body().getKehadiranDosen().get(i).getNama_dosen();
@@ -130,16 +126,17 @@ public class KehadiranDosenFragment extends Fragment {
 
                         }
                     } else {
-                        Toast.makeText(getContext(), "Data dosen yang "+status_kehadiran+" kosong.", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getContext(), "Data dosen yang "+status_kehadiran+" kosong.", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(getContext(), "onResponse error: " +response.errorBody(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), getContext().getResources().getString(R.string.terjadi_kesalahan), Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseKehadiranDosen> call, Throwable t) {
-            Toast.makeText(getContext(), "onFailure : "+t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getContext().getResources().getString(R.string.gagal_terhubung_ke_server), Toast.LENGTH_LONG).show();
+                t.getLocalizedMessage();
             }
         });
 

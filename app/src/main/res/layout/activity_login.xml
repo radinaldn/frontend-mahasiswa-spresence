@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorPrimaryDark"
     android:scrollbarAlwaysDrawVerticalTrack="true"
     tools:layout_editor_absoluteX="191dp"
@@ -30,8 +30,7 @@
         android:background="#fff"
         android:elevation="4dp"
         android:orientation="vertical"
-        android:padding="20dp"
-        >
+        android:padding="20dp">
 
 
         <LinearLayout
@@ -58,7 +57,7 @@
                     android:hint="Nim"
                     android:inputType="textEmailAddress"
                     android:singleLine="true"
-                    android:textColor="#000"/>
+                    android:textColor="#000" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -75,13 +74,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:singleLine="true"
+                    android:drawableLeft="@drawable/lock"
                     android:drawableStart="@drawable/lock"
                     android:drawableTint="@color/colorPrimaryDark"
                     android:hint="Password"
                     android:inputType="textPassword"
-                    android:drawableLeft="@drawable/lock"
-                    android:textColor="#000"/>
+                    android:singleLine="true"
+                    android:textColor="#000" />
             </android.support.design.widget.TextInputLayout>
 
             <Button
@@ -90,18 +89,18 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="22dp"
                 android:background="#d67601"
-                android:text="Sign in"
+                android:text="@string/sign_in"
                 android:textAllCaps="false"
                 android:textColor="#fff"
                 android:textSize="18sp" />
 
             <TextView
+                android:id="@+id/tvregister"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/tvregister"
                 android:layout_gravity="center"
-                android:textColor="#1e1e1e"
-                android:text="©INKUBATOR 2018"/>
+                android:text="@string/mengalami_kendala_laporkan"
+                android:textColor="#1e1e1e" />
 
         </LinearLayout>
     </RelativeLayout>

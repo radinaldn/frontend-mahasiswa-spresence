@@ -36,8 +36,8 @@ public class HistoriPresensiFragment extends Fragment {
     private RecyclerView recyclerView;
     private HistoriPresensiAdapter adapter;
     private ArrayList<PresensiDetail> presensiArrayList;
-    private static final String ARG_STATUS= "status";
-    private static final String TAG_NIM= "nim";
+    private static final String ARG_STATUS = "status";
+    private static final String TAG_NIM = "nim";
     public static String ID_PRESENSI;
 
     ApiInterface apiService;
@@ -47,7 +47,7 @@ public class HistoriPresensiFragment extends Fragment {
     SessionManager sessionManager;
     private String status;
 
-    public static HistoriPresensiFragment newInstance(String id_presensi, String status_kehadiran){
+    public static HistoriPresensiFragment newInstance(String id_presensi, String status_kehadiran) {
         ID_PRESENSI = id_presensi;
         Bundle args = new Bundle();
         args.putString(ARG_STATUS, status_kehadiran);
@@ -65,7 +65,7 @@ public class HistoriPresensiFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle extras = getArguments();
-        if( extras != null){
+        if (extras != null) {
             status = extras.getString(ARG_STATUS);
         }
 
@@ -81,10 +81,9 @@ public class HistoriPresensiFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerView);
 
 
-
         swipeRefreshLayout = view.findViewById(R.id.swipe_activity_histori_presensi);
         swipeRefreshLayout.setColorSchemeResources(R.color.refresh, R.color.refresh1, R.color.refresh2);
-        swipeRefreshLayout.setOnRefreshListener( new SwipeRefreshLayout.OnRefreshListener() {
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 Intent intent = getActivity().getIntent();
@@ -105,11 +104,11 @@ public class HistoriPresensiFragment extends Fragment {
         call.enqueue(new Callback<ResponsePresensiDetail>() {
             @Override
             public void onResponse(Call<ResponsePresensiDetail> call, Response<ResponsePresensiDetail> response) {
-                if (response.isSuccessful()){
-                    if (response.body().getPresensiDetail().size()>0){
+                if (response.isSuccessful()) {
+                    if (response.body().getPresensiDetail().size() > 0) {
                         presensiArrayList = new ArrayList<>();
                         for (int i = 0; i < response.body().getPresensiDetail().size(); i++) {
-                            Log.i(TAG, "onResponse: Mahasiswa "+status+ ". "+response.body().getPresensiDetail().get(i).getNamaMahasiswa());
+                            Log.i(TAG, "onResponse: Mahasiswa " + status + ". " + response.body().getPresensiDetail().get(i).getNamaMahasiswa());
 
                             String id_presensi = response.body().getPresensiDetail().get(i).getIdPresensi();
                             String nim = response.body().getPresensiDetail().get(i).getNim();
@@ -123,7 +122,6 @@ public class HistoriPresensiFragment extends Fragment {
                             String foto_mahasiswa = response.body().getPresensiDetail().get(i).getFoto_mahasiswa();
 
                             presensiArrayList.add(new PresensiDetail(id_presensi, nim, nama_mahasiswa, status, lat, lng, waktu, jarak, proses, foto_mahasiswa));
-
 
 
                             adapter = new HistoriPresensiAdapter(presensiArrayList, getContext());
@@ -141,13 +139,13 @@ public class HistoriPresensiFragment extends Fragment {
 //                        Toast.makeText(getContext(), "Data mahasiswa "+status_kehadiran+" kosong", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(getContext(), "onResponse error: " +response.errorBody(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), getResources().getString(R.string.terjadi_kesalahan), Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponsePresensiDetail> call, Throwable t) {
-                Toast.makeText(getContext(), "onFailure : " +t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getResources().getString(R.string.gagal_terhubung_ke_server), Toast.LENGTH_LONG).show();
             }
         });
     }

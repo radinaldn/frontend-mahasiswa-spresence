@@ -1,13 +1,13 @@
 package com.inkubator.radinaldn.smartabsen.activities;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Toast;
 
@@ -72,23 +72,30 @@ public class HistoriMengajarActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+                goToMainActivity();
             }
         });
 
+    }
+
+    private void goToMainActivity() {
+        Intent intent = new Intent(HistoriMengajarActivity.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY);
+        startActivity(intent);
+        finish();
     }
 
     private void getHistoriMengajar(String idMengajar) {
         apiService.presensiHistoriMengajarByIdMengajar(idMengajar).enqueue(new Callback<ResponseHistoriMengajar>() {
             @Override
             public void onResponse(retrofit2.Call<ResponseHistoriMengajar> call, Response<ResponseHistoriMengajar> response) {
-                if(response.isSuccessful()){
-                    Log.i(TAG, "onResponse: response : "+response);
+                if (response.isSuccessful()) {
+                    Log.i(TAG, "onResponse: response : " + response);
 
-                    if(response.body().getHistoriMengajar().size()>0){
+                    if (response.body().getHistoriMengajar().size() > 0) {
                         historiMengajarArrayList = new ArrayList<>();
-                        for (int i = 0; i <response.body().getHistoriMengajar().size() ; i++) {
-                            Log.i(TAG, "onResponse: Pertemuan "+response.body().getHistoriMengajar().get(i));
+                        for (int i = 0; i < response.body().getHistoriMengajar().size(); i++) {
+                            Log.i(TAG, "onResponse: Pertemuan " + response.body().getHistoriMengajar().get(i));
 
                             String id_presensi = response.body().getHistoriMengajar().get(i).getIdPresensi();
                             String matakuliah = response.body().getHistoriMengajar().get(i).getNamaMatakuliah();
@@ -100,26 +107,25 @@ public class HistoriMengajarActivity extends AppCompatActivity {
                             String total_tidak_hadir = response.body().getHistoriMengajar().get(i).getTotalTidakHadir();
 
                             historiMengajarArrayList.add(new HistoriMengajar(id_presensi, matakuliah, pertemuan, kelas, ruangan, waktu, total_hadir, total_tidak_hadir));
-                            adapter = new HistoriMengajarAdapter(historiMengajarArrayList);
+                            adapter = new HistoriMengajarAdapter(historiMengajarArrayList, getApplicationContext());
                             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(HistoriMengajarActivity.this);
                             recyclerView.setLayoutManager(layoutManager);
                             recyclerView.setAdapter(adapter);
                             swipeRefreshLayout.setRefreshing(false);
 
 
-
                         }
                     } else {
-                        Toast.makeText(getApplicationContext(), "Data kosong ", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.tidak_ada_data), Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), "onResponse Error :  "+response.errorBody(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.terjadi_kesalahan), Toast.LENGTH_LONG).show();
                 }
-        }
+            }
 
             @Override
             public void onFailure(Call<ResponseHistoriMengajar> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), "onResponse Error :  " + t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.gagal_terhubung_ke_server), Toast.LENGTH_LONG).show();
             }
         });
     }

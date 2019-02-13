@@ -1,12 +1,12 @@
 package com.inkubator.radinaldn.smartabsen.activities;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-
 
 import com.inkubator.radinaldn.smartabsen.R;
 import com.inkubator.radinaldn.smartabsen.adapters.KehadiranDosenViewPagerAdapter;
@@ -35,7 +35,7 @@ public class KehadiranDosenActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+                goToMainActivity();
             }
         });
 
@@ -50,8 +50,15 @@ public class KehadiranDosenActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         KehadiranDosenViewPagerAdapter adapter = new KehadiranDosenViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(KehadiranDosenFragment.newInstance("Hadir"), "Hadir");
-        adapter.addFragment(KehadiranDosenFragment.newInstance("Tidak Hadir"), "Tidak Hadir");
+        adapter.addFragment(KehadiranDosenFragment.newInstance("Hadir"), getResources().getString(R.string.hadir));
+        adapter.addFragment(KehadiranDosenFragment.newInstance("Tidak Hadir"), getResources().getString(R.string.tidak_hadir));
         viewPager.setAdapter(adapter);
+    }
+
+    private void goToMainActivity() {
+        Intent intent = new Intent(KehadiranDosenActivity.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY);
+        startActivity(intent);
+        finish();
     }
 }

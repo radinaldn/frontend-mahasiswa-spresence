@@ -52,18 +52,18 @@ public class MengambilAdapter extends RecyclerView.Adapter<MengambilAdapter.Meng
         holder.tv_id_mengajar.setText(dataList.get(position).getIdMengajar());
         holder.tv_matakuliah.setText(dataList.get(position).getNamaMatakuliah());
         holder.tv_nama_dosen.setText(dataList.get(position).getNamaDosen());
-        holder.tv_kelas.setText("Kelas "+dataList.get(position).getNama_kelas());
-        holder.tv_sks.setText(dataList.get(position).getSks()+" SKS");
-        holder.tv_waktu.setText("Pukul "+dataList.get(position).getWaktuMulai());
+        holder.tv_kelas.setText(mContext.getResources().getString(R.string.kelas) + " " + dataList.get(position).getNama_kelas());
+        holder.tv_sks.setText(dataList.get(position).getSks() + " " + mContext.getResources().getString(R.string.sks));
+        holder.tv_waktu.setText(mContext.getResources().getString(R.string.pukul) + " " + dataList.get(position).getWaktuMulai());
 
-        if (Integer.parseInt(dataList.get(position).getSisaJatah())<0){
-            holder.tv_sisa_jatah.setText("TIDAK DAPAT MENGIKUTI UAS");
+        if (Integer.parseInt(dataList.get(position).getSisaJatah()) < 0) {
+            holder.tv_sisa_jatah.setText(mContext.getResources().getString(R.string.tidak_dapat_mengikuti_uas));
             holder.tv_sisa_jatah.setTextColor(mContext.getResources().getColor(R.color.textDangerDark));
         } else {
-            holder.tv_sisa_jatah.setText(" Sisa jatah : "+dataList.get(position).getSisaJatah());
+            holder.tv_sisa_jatah.setText(mContext.getResources().getString(R.string.sisa_jatah) + dataList.get(position).getSisaJatah());
 
             // beri warna pada text sisa jatah
-            switch (dataList.get(position).getSisaJatah()){
+            switch (dataList.get(position).getSisaJatah()) {
                 case "4":
                     holder.tv_sisa_jatah.setTextColor(mContext.getResources().getColor(R.color.textSuccessDark));
                     break;
@@ -79,7 +79,7 @@ public class MengambilAdapter extends RecyclerView.Adapter<MengambilAdapter.Meng
                 case "0":
                     holder.tv_sisa_jatah.setTextColor(mContext.getResources().getColor(R.color.textDangerDark));
                     break;
-        }
+            }
 
         }
 

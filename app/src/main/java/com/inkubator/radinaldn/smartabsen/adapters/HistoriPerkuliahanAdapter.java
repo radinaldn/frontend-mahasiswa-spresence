@@ -15,7 +15,6 @@ import com.inkubator.radinaldn.smartabsen.R;
 import com.inkubator.radinaldn.smartabsen.activities.HistoriPresensiActivity;
 import com.inkubator.radinaldn.smartabsen.models.HistoriPerkuliahan;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -55,13 +54,13 @@ public class HistoriPerkuliahanAdapter extends RecyclerView.Adapter<HistoriPerku
         holder.tv_id_presensi.setText(dataList.get(position).getIdPresensi());
         holder.tv_matakuliah.setText(dataList.get(position).getNamaMatakuliah());
         holder.tv_nama_dosen.setText(dataList.get(position).getNamaDosen());
-        holder.tv_pertemuan.setText("Pertemuan "+dataList.get(position).getPertemuan());
-        holder.tv_kelas.setText("Kelas "+dataList.get(position).getNamaKelas());
+        holder.tv_pertemuan.setText(mContext.getResources().getString(R.string.pertemuan) + " " + dataList.get(position).getPertemuan());
+        holder.tv_kelas.setText(mContext.getResources().getString(R.string.kelas) + " " + dataList.get(position).getNamaKelas());
         holder.tv_ruangan.setText(dataList.get(position).getNamaRuangan());
         holder.tv_waktu.setText(dataList.get(position).getWaktu());
         holder.tv_status.setText(dataList.get(position).getStatus());
 
-        switch (dataList.get(position).getStatus()){
+        switch (dataList.get(position).getStatus()) {
             case "Hadir":
                 holder.tv_status.setBackgroundColor(mContext.getResources().getColor(R.color.GreenBootstrap));
                 break;
@@ -99,7 +98,7 @@ public class HistoriPerkuliahanAdapter extends RecyclerView.Adapter<HistoriPerku
                 @Override
                 public void onClick(View v) {
                     Intent i = new Intent(itemView.getContext(), HistoriPresensiActivity.class);
-                    Log.d(TAG, "onClick: tv_id_presensi : "+tv_id_presensi.getText());
+                    Log.d(TAG, "onClick: tv_id_presensi : " + tv_id_presensi.getText());
                     i.putExtra(TAG_ID_PRESENSI, tv_id_presensi.getText());
                     i.putExtra(TAG_NAMA_MATAKULIAH, tv_matakuliah.getText());
                     i.putExtra(TAG_PERTEMUAN, tv_pertemuan.getText());

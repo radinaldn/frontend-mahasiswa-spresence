@@ -11,7 +11,7 @@
     android:padding="16dp">
 
     <TextView
-        android:text="*Dengan menambahkan ID Telegram di bawah ini, maka anda setuju untuk mengaktifkan pemberitahuan melalui Telegram.."
+        android:text="@string/dengan_menambahkan_id_telegram_di_bawah_ini_maka_anda_setuju_untuk_mengaktifkan_pemberitahuan_melalui_telegram"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <ImageView
@@ -21,7 +21,7 @@
         android:src="@drawable/sc_get_id_bot"
         />
     <TextView
-        android:text="*Copy Chat ID yang didapat dari bot, kemudian paste ke kolom berikut."
+        android:text="@string/copy_chat_id_yang_didapat_dari_bot_kemudian_paste_ke_kolom_berikut"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
@@ -35,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/ic_fiber_pin_black_24dp"
-            android:hint="ID Telegram. Contoh : 3567890"
+            android:hint="@string/id_telegram_contoh_3567890"
             android:drawablePadding="5dp"
             android:inputType="number"
             android:textColor="@color/textColorPrimary"/>

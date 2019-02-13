@@ -2,6 +2,7 @@
 
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     card_view:cardCornerRadius="6dp"
@@ -11,8 +12,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:layout_margin="5dp">
+        android:layout_margin="5dp"
+        android:orientation="horizontal">
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="wrap_content"
@@ -23,71 +24,68 @@
 
             <!-- TextView Nama Mahasiwa -->
             <TextView
-                android:visibility="gone"
-                android:text="001"
                 android:id="@+id/tv_idmengajar"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                tools:text="001" />
 
             <!-- TextView Nama Mahasiwa -->
             <TextView
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:text="Dasar Pemrograman"
                 android:id="@+id/tv_matakuliah"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                tools:text="Dasar Pemrograman" />
 
             <TextView
+                android:id="@+id/tv_nama_dosen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:text="Nazruddin Safaat H."
-                android:id="@+id/tv_nama_dosen"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                tools:text="Nazruddin Safaat H." />
 
             <!-- TextView Npm Mahasiswa -->
             <TextView
-                android:text="A"
                 android:id="@+id/tv_kelas"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                tools:text="A" />
 
             <!-- TextView NoHp Mahasiswa -->
             <TextView
-                android:text="3 SKS"
                 android:id="@+id/tv_sks"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                tools:text="3 SKS" />
 
             <TextView
-                android:text="07:00:00"
                 android:id="@+id/tv_waktu"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                tools:text="07:00:00" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
-                >
+                android:orientation="horizontal">
 
                 <LinearLayout
-                    android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    >
+                    android:layout_weight="1">
 
                     <TextView
-                        android:drawablePadding="5dp"
                         android:id="@+id/tv_sisa_jatah"
-                        android:drawableLeft="@drawable/ic_clock"
-                        android:gravity="center_vertical"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text=" Sisa jatah : 3" />
-
+                        android:drawableLeft="@drawable/ic_clock"
+                        android:drawablePadding="5dp"
+                        android:gravity="center_vertical"
+                        tools:text=" Sisa jatah : 3" />
 
 
                 </LinearLayout>
@@ -99,45 +97,24 @@
                     android:gravity="end">
 
 
-
                     <Button
-android:visibility="invisible"
-                        android:layout_marginLeft="5dp"
                         android:id="@+id/bt_detail"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="5dp"
                         android:background="@color/colorAccent"
                         android:drawableLeft="@drawable/ic_eye"
                         android:drawableTint="@color/textColorPrimary"
-                        android:text=" DETAIL"
-                        android:textColor="@color/textColorWhite" />
-
-                    <!--<TextView-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:text=" " />-->
-
-                    <!--<Button-->
-                    <!--android:paddingLeft="5dp"-->
-                    <!--android:id="@+id/bt_histori"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_gravity="center_vertical"-->
-                    <!--android:background="@color/colorAccent"-->
-                    <!--android:drawableLeft="@drawable/ic_history_black_24dp"-->
-                    <!--android:drawableTint="@color/textColorPrimary"-->
-                    <!--android:text=" Histori"-->
-                    <!--android:textColor="@color/textColorPrimary" />-->
-
+                        android:textColor="@color/textColorWhite"
+                        android:visibility="invisible"
+                        tools:text="@string/detail" />
                 </LinearLayout>
-
 
 
             </LinearLayout>
 
         </LinearLayout>
-
 
 
     </LinearLayout>

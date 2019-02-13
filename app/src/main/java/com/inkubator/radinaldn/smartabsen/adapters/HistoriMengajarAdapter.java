@@ -1,5 +1,6 @@
 package com.inkubator.radinaldn.smartabsen.adapters;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -13,8 +14,6 @@ import android.widget.TextView;
 import com.inkubator.radinaldn.smartabsen.R;
 import com.inkubator.radinaldn.smartabsen.activities.HistoriPresensiActivity;
 import com.inkubator.radinaldn.smartabsen.models.HistoriMengajar;
-import com.inkubator.radinaldn.smartabsen.rests.ApiClient;
-import com.inkubator.radinaldn.smartabsen.rests.ApiInterface;
 
 import java.util.ArrayList;
 
@@ -33,9 +32,11 @@ public class HistoriMengajarAdapter extends RecyclerView.Adapter<HistoriMengajar
 
     public String ID_PRESENSI;
     public final String STATUS_PRESENSI = "close";
+    private Context mContext;
 
-    public HistoriMengajarAdapter(ArrayList<HistoriMengajar> dataList){
+    public HistoriMengajarAdapter(ArrayList<HistoriMengajar> dataList, Context context) {
         this.dataList = dataList;
+        this.mContext = context;
     }
 
     @NonNull
@@ -52,12 +53,12 @@ public class HistoriMengajarAdapter extends RecyclerView.Adapter<HistoriMengajar
         holder.tv_id_presensi.setText(dataList.get(position).getIdPresensi());
         ID_PRESENSI = dataList.get(position).getIdPresensi();
         holder.tv_matakuliah.setText(dataList.get(position).getNamaMatakuliah());
-        holder.tv_pertemuan.setText("Pertemuan "+dataList.get(position).getPertemuan());
-        holder.tv_kelas.setText("Kelas "+dataList.get(position).getNamaKelas());
-        holder.tv_ruangan.setText("Ruangan "+dataList.get(position).getNamaRuangan());
+        holder.tv_pertemuan.setText(mContext.getResources().getString(R.string.pertemuan) + " " + dataList.get(position).getPertemuan());
+        holder.tv_kelas.setText(mContext.getResources().getString(R.string.kelas) + " " + dataList.get(position).getNamaKelas());
+        holder.tv_ruangan.setText(mContext.getResources().getString(R.string.ruangan) + " " + dataList.get(position).getNamaRuangan());
         holder.tv_waktu.setText(dataList.get(position).getWaktu());
-        holder.tv_jlhadir.setText(" "+dataList.get(position).getTotalHadir());
-        holder.tv_jltdkhadir.setText("  "+dataList.get(position).getTotalTidakHadir());
+        holder.tv_jlhadir.setText(" " + dataList.get(position).getTotalHadir());
+        holder.tv_jltdkhadir.setText("  " + dataList.get(position).getTotalTidakHadir());
 
     }
 
@@ -84,7 +85,6 @@ public class HistoriMengajarAdapter extends RecyclerView.Adapter<HistoriMengajar
             tv_jltdkhadir = itemView.findViewById(R.id.tv_jltdkhadir);
 
 
-
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -97,14 +97,13 @@ public class HistoriMengajarAdapter extends RecyclerView.Adapter<HistoriMengajar
                 @Override
                 public void onClick(View v) {
                     Intent i = new Intent(itemView.getContext(), HistoriPresensiActivity.class);
-                    Log.d(TAG, "onClick: tv_id_presensi : "+tv_id_presensi.getText());
+                    Log.d(TAG, "onClick: tv_id_presensi : " + tv_id_presensi.getText());
                     i.putExtra(TAG_ID_PRESENSI, tv_id_presensi.getText());
                     i.putExtra(TAG_NAMA_MATAKULIAH, tv_matakuliah.getText());
                     i.putExtra(TAG_PERTEMUAN, tv_pertemuan.getText());
                     itemView.getContext().startActivity(i);
                 }
             });
-
 
 
         }

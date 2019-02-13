@@ -15,27 +15,26 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         tools:context=".activities.MainActivity">
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                >
+                android:orientation="vertical">
 
                 <TextView
-                    android:fontFamily="@font/rancho"
-                    android:gravity="bottom"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
                     android:background="@drawable/group_school"
+                    android:fontFamily="@font/rancho"
+                    android:gravity="bottom"
+                    android:text="@string/smart_presence"
                     android:textAlignment="center"
-                    android:text="Smart Presence"
-                    android:textSize="42sp"
                     android:textColor="@color/textColorWhite"
-                    />
-
+                    android:textSize="42sp" />
 
 
                 <LinearLayout
@@ -48,58 +47,48 @@
 
 
                     <TextView
-                        android:fontFamily="@font/roboto_slab_regilar"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:padding="8dp"
                         android:layout_marginTop="30dp"
                         android:background="@color/colorPinkRoseDark"
-                        android:text="Kuliah Hari ini"
-                        android:textSize="18sp"
+                        android:fontFamily="@font/roboto_slab_regilar"
+                        android:padding="8dp"
+                        android:text="@string/kuliah_hari_ini"
                         android:textAlignment="center"
                         android:textColor="@color/colorWhite"
-                        />
+                        android:textSize="18sp" />
 
                     <TextView
 
-                        style="@style/TextAppearance.AppCompat.Large"
                         android:id="@+id/tv_libur"
-                        android:fontFamily="@font/roboto_slab_regilar"
+                        style="@style/TextAppearance.AppCompat.Large"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:padding="8dp"
-                        android:textStyle="bold"
-                        android:text="Libur! Hubungi kosma jika ada jadwal kuliah pengganti."
                         android:layout_gravity="center"
+                        android:fontFamily="@font/roboto_slab_regilar"
+                        android:padding="8dp"
+                        android:text="@string/libur_hubungi_kosma_jika_ada_jadwal_kuliah_pengganti"
                         android:textAlignment="center"
                         android:textColor="@color/colorAquaDark"
-                        />
+                        android:textStyle="bold" />
 
 
-                            <android.support.v7.widget.RecyclerView
-                                android:layout_margin="5dp"
-                                tools:listitem="@layout/mengambil_item"
-                                xmlns:android="http://schemas.android.com/apk/res/android"
-                                android:id="@+id/recyclerView"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_centerHorizontal="true"
-                                android:layout_centerVertical="true" />
-
-
-
+                    <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:id="@+id/recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:layout_margin="5dp"
+                        tools:listitem="@layout/mengambil_item" />
 
 
                 </LinearLayout>
 
 
-
-
-
             </LinearLayout>
 
         </ScrollView>
-
 
 
     </LinearLayout>

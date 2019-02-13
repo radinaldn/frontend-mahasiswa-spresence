@@ -13,49 +13,50 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+
 /**
  * Created by radinaldn on 11/02/18.
  */
 
-public class HttpFileUpload implements Runnable{
+public class HttpFileUpload implements Runnable {
     URL connectURL;
     String responseString;
     String Title;
     String fileName;
     String Description;
-    byte[ ] dataToServer;
+    byte[] dataToServer;
     FileInputStream fileInputStream = null;
-    public HttpFileUpload(String urlString, String vTitle, String vDesc, String file){
-        try{
+
+    public HttpFileUpload(String urlString, String vTitle, String vDesc, String file) {
+        try {
             connectURL = new URL(urlString);
-            Title= vTitle;
+            Title = vTitle;
             Description = vDesc;
             fileName = file;
-        }catch(Exception ex){
-            Log.i("HttpFileUpload","URL Malformatted");
+        } catch (Exception ex) {
+            Log.i("HttpFileUpload", "URL Malformatted");
         }
     }
 
-    public Boolean Send_Now(FileInputStream fStream){
+    public Boolean Send_Now(FileInputStream fStream) {
         fileInputStream = fStream;
         return Sending();
     }
 
-    Boolean Sending(){
+    Boolean Sending() {
 
-        System.out.println("file Name is :"+fileName);
+        System.out.println("file Name is :" + fileName);
 
         String iFileName = fileName;
         String lineEnd = "\r\n";
         String twoHyphens = "--";
         String boundary = "*****";
-        String Tag="fSnd";
-        try
-        {
-            Log.e(Tag,"Starting Http File Sending to URL");
+        String Tag = "fSnd";
+        try {
+            Log.e(Tag, "Starting Http File Sending to URL");
 
             // Open a HTTP connection to the URL
-            HttpURLConnection conn = (HttpURLConnection)connectURL.openConnection();
+            HttpURLConnection conn = (HttpURLConnection) connectURL.openConnection();
 
             // Allow Inputs
             conn.setDoInput(true);
@@ -71,44 +72,43 @@ public class HttpFileUpload implements Runnable{
 
             conn.setRequestProperty("Connection", "Keep-Alive");
 
-            conn.setRequestProperty("Content-Type", "multipart/form-data;boundary="+boundary);
+            conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
 
             DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
 
             dos.writeBytes(twoHyphens + boundary + lineEnd);
-            dos.writeBytes("Content-Disposition: form-data; name=\"title\""+ lineEnd);
+            dos.writeBytes("Content-Disposition: form-data; name=\"title\"" + lineEnd);
             dos.writeBytes(lineEnd);
             dos.writeBytes(Title);
             dos.writeBytes(lineEnd);
             dos.writeBytes(twoHyphens + boundary + lineEnd);
 
-            dos.writeBytes("Content-Disposition: form-data; name=\"description\""+ lineEnd);
+            dos.writeBytes("Content-Disposition: form-data; name=\"description\"" + lineEnd);
             dos.writeBytes(lineEnd);
             dos.writeBytes(Description);
             dos.writeBytes(lineEnd);
             dos.writeBytes(twoHyphens + boundary + lineEnd);
 
-            dos.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"" + iFileName +"\"" + lineEnd);
+            dos.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"" + iFileName + "\"" + lineEnd);
             dos.writeBytes(lineEnd);
 
-            Log.e(Tag,"Headers are written");
+            Log.e(Tag, "Headers are written");
 
             // create a buffer of maximum size
             int bytesAvailable = fileInputStream.available();
 
             int maxBufferSize = 1024;
             int bufferSize = Math.min(bytesAvailable, maxBufferSize);
-            byte[ ] buffer = new byte[bufferSize];
+            byte[] buffer = new byte[bufferSize];
 
             // read file and write it into form...
             int bytesRead = fileInputStream.read(buffer, 0, bufferSize);
 
-            while (bytesRead > 0)
-            {
+            while (bytesRead > 0) {
                 dos.write(buffer, 0, bufferSize);
                 bytesAvailable = fileInputStream.available();
-                bufferSize = Math.min(bytesAvailable,maxBufferSize);
-                bytesRead = fileInputStream.read(buffer, 0,bufferSize);
+                bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                bytesRead = fileInputStream.read(buffer, 0, bufferSize);
             }
             dos.writeBytes(lineEnd);
             dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
@@ -118,33 +118,29 @@ public class HttpFileUpload implements Runnable{
 
             dos.flush();
 
-            Log.e(Tag,"File Sent, Response: "+String.valueOf(conn.getResponseCode()));
+            Log.e(Tag, "File Sent, Response: " + String.valueOf(conn.getResponseCode()));
 
             InputStream is = conn.getInputStream();
 
             // retrieve the response from server
             int ch;
 
-            StringBuffer b =new StringBuffer();
-            while( ( ch = is.read() ) != -1 ){ b.append( (char)ch ); }
-            String s=b.toString();
-            Log.i("Response",s);
+            StringBuffer b = new StringBuffer();
+            while ((ch = is.read()) != -1) {
+                b.append((char) ch);
+            }
+            String s = b.toString();
+            Log.i("Response", s);
             dos.close();
 
-            if(String.valueOf(conn.getResponseCode()).equals("200"))
-            {
+            if (String.valueOf(conn.getResponseCode()).equals("200")) {
                 return true;
-            }else{
+            } else {
                 return false;
             }
-        }
-        catch (MalformedURLException ex)
-        {
+        } catch (MalformedURLException ex) {
             Log.e(Tag, "URL error: " + ex.getMessage(), ex);
-        }
-
-        catch (IOException ioe)
-        {
+        } catch (IOException ioe) {
             Log.e(Tag, "IO error: " + ioe.getMessage(), ioe);
         }
         return false;

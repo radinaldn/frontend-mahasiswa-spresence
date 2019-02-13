@@ -4,16 +4,11 @@ package com.inkubator.radinaldn.smartabsen.responses;
  * Created by radinaldn on 03/07/18.
  */
 
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.inkubator.radinaldn.smartabsen.models.Mahasiswa;
 
-
-
 import java.util.List;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 
 public class ResponseLogin {
 

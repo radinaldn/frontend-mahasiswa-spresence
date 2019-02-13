@@ -28,6 +28,11 @@ public class SessionManager {
     public static final String FOTO = "foto";
     public static final String ID_JURUSAN = "idJurusan";
 
+    public static final String HAS_LAST_LOCATION = "hasLastLocation";
+    public static final String LATITUDE = "latitude";
+    public static final String LONGITUDE = "longitude";
+    public static final String LAST_LOCATED = "lastLocated";
+
     public Context get_context(){
         return _context;
     }
@@ -50,6 +55,15 @@ public class SessionManager {
         editor.putString(FOTO, foto);
         editor.putString(ID_JURUSAN, id_jurusan);
         editor.commit();
+    }
+
+    public void createMyLocationSession(String latitude, String longitude, String last_located){
+        editor.putBoolean(HAS_LAST_LOCATION, true);
+        editor.putString(LATITUDE, latitude);
+        editor.putString(LONGITUDE, longitude);
+        editor.putString(LAST_LOCATED, last_located);
+        editor.commit();
+
     }
 
     public void updateIdTelegram(String id_telegram){
@@ -75,6 +89,14 @@ public class SessionManager {
         return mahasiswa;
     }
 
+    public HashMap<String, String> getMyLocationDetail(){
+        HashMap<String, String> location = new HashMap<>();
+        location.put(LATITUDE, sharedPreferences.getString(LATITUDE, null));
+        location.put(LONGITUDE, sharedPreferences.getString(LONGITUDE, null));
+        location.put(LAST_LOCATED, sharedPreferences.getString(LAST_LOCATED, null));
+        return location;
+    }
+
     public void logoutMahasiswa(){
         editor.clear();
         editor.commit();
@@ -83,4 +105,9 @@ public class SessionManager {
     public boolean isLoggedIn(){
         return sharedPreferences.getBoolean(IS_LOGGED_IN, false);
     }
+
+    public boolean hasLastLocation(){
+        return sharedPreferences.getBoolean(HAS_LAST_LOCATION, false);
+    }
 }
+

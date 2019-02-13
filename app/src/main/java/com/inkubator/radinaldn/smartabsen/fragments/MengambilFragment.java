@@ -31,7 +31,7 @@ import retrofit2.Response;
  */
 
 
-public class MengambilFragment extends Fragment{
+public class MengambilFragment extends Fragment {
     private RecyclerView recyclerView;
     private MengambilAdapter adapter;
     private ArrayList<Mengambil> mengambilArrayList;
@@ -64,7 +64,7 @@ public class MengambilFragment extends Fragment{
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle extras = getArguments();
-        if (extras != null){
+        if (extras != null) {
             dayname = extras.getString(ARG_DAYNAME);
         }
 
@@ -103,11 +103,11 @@ public class MengambilFragment extends Fragment{
         call.enqueue(new Callback<ResponseMengambil>() {
             @Override
             public void onResponse(Call<ResponseMengambil> call, Response<ResponseMengambil> response) {
-                if(response.isSuccessful()){
-                    if (response.body().getMengambil().size()>0){
+                if (response.isSuccessful()) {
+                    if (response.body().getMengambil().size() > 0) {
                         mengambilArrayList = new ArrayList<>();
-                        for (int i = 0; i <response.body().getMengambil().size() ; i++) {
-                            Log.i(TAG, "onResponse: ada matakuliah hari "+dayname+" : "+response.body().getMengambil().get(i).getNamaMatakuliah());
+                        for (int i = 0; i < response.body().getMengambil().size(); i++) {
+                            Log.i(TAG, "onResponse: ada matakuliah hari " + dayname + " : " + response.body().getMengambil().get(i).getNamaMatakuliah());
 
                             String id_mengambil = response.body().getMengambil().get(i).getIdMengambil();
                             String id_mengajar = response.body().getMengambil().get(i).getIdMengajar();
@@ -131,15 +131,17 @@ public class MengambilFragment extends Fragment{
 
                         }
                     } else {
-                        Log.i(TAG, "onResponse: tidak ada matakuliah hari "+dayname );
+                        Log.i(TAG, "onResponse: tidak ada matakuliah hari " + dayname);
                     }
                 } else {
-                    Log.e(TAG, "onResponse erro : "+response.errorBody());
+                    Toast.makeText(getContext(), getContext().getResources().getString(R.string.terjadi_kesalahan), Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "onResponse erro : " + response.errorBody());
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseMengambil> call, Throwable t) {
+                Toast.makeText(getContext(), getContext().getResources().getString(R.string.gagal_terhubung_ke_server), Toast.LENGTH_SHORT).show();
                 t.printStackTrace();
             }
         });

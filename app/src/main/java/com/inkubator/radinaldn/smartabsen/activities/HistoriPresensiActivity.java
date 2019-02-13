@@ -64,8 +64,8 @@ public class HistoriPresensiActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         HistoriPresensiViewPagerAdapter adapter = new HistoriPresensiViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(HistoriPresensiFragment.newInstance(ID_PRESENSI, "Hadir"), "Hadir");
-        adapter.addFragment(HistoriPresensiFragment.newInstance(ID_PRESENSI, "Tidak Hadir"), "Tidak Hadir");
+        adapter.addFragment(HistoriPresensiFragment.newInstance(ID_PRESENSI, "Hadir"), getResources().getString(R.string.hadir));
+        adapter.addFragment(HistoriPresensiFragment.newInstance(ID_PRESENSI, "Tidak Hadir"), getResources().getString(R.string.tidak_hadir));
         viewPager.setAdapter(adapter);
     }
 }

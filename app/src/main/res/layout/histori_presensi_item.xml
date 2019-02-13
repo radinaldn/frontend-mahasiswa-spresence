@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.v7.widget.CardView
-    android:id="@+id/cv_histori_presensi_item"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cv_histori_presensi_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
 
@@ -15,17 +14,16 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_margin="5dp"
-        xmlns:app="http://schemas.android.com/tools"
-        >
+        android:orientation="horizontal">
+
         <de.hdodenhof.circleimageview.CircleImageView
 
             android:id="@+id/iv_foto"
-            android:layout_margin="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            />
+            android:layout_margin="5dp"
+            tools:src="@drawable/dummy_ava" />
 
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -39,21 +37,22 @@
                 android:id="@+id/tv_id_presensi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="001"
-                android:visibility="gone" />
+                android:visibility="gone"
+                tools:text="001" />
             <!-- TextView Npm Mahasiswa -->
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
                 <TextView
-                    android:textSize="18sp"
-                    android:textStyle="bold"
                     android:id="@+id/tv_nama"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Radinal Dwiki"
-                    />
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    tools:text="Radinal Dwiki" />
+
                 <ImageView
                     android:id="@+id/iv_proses"
                     android:layout_width="25dp"
@@ -65,45 +64,42 @@
                 android:id="@+id/tv_nim"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="11451101xxx" />
+                tools:text="11451101xxx" />
 
             <!-- TextView NoHp Mahasiswa -->
             <TextView
                 android:id="@+id/tv_jarak"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0 Meter" />
+                tools:text="0 Meter" />
 
             <TextView
                 android:id="@+id/tv_waktu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="07:00:00" />
+                tools:text="07:00:00" />
 
-           <TextView
-                android:textColor="@color/textColorWhite"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
+            <TextView
                 android:id="@+id/tv_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="n/a" />
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:textColor="@color/textColorWhite"
+                tools:text="n/a" />
 
             <TextView
-                android:visibility="gone"
                 android:id="@+id/tv_proses"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Pending" />
+                android:visibility="gone"
+                tools:text="Pending" />
 
 
         </LinearLayout>
 
 
-
-
     </LinearLayout>
-
 
 
 </android.support.v7.widget.CardView>

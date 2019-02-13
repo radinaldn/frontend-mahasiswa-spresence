@@ -131,7 +131,7 @@ public class ProfileSayaActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+                goToMainActivity();
             }
         });
 
@@ -517,4 +517,11 @@ public class ProfileSayaActivity extends AppCompatActivity {
             startActivity(getIntent().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
         }
     }
+    private void goToMainActivity(){
+        Intent intent = new Intent(ProfileSayaActivity.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY);
+        startActivity(intent);
+        finish();
+    }
+
 }
