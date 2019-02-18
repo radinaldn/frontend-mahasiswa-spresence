@@ -90,4 +90,5 @@
 
     <string name="arahkan_kamera_qr_code">Arahkan kamera ke QR Code ...</string>
     <string name="terjadi_kesalahan_pastikan_koneksi_internet_anda_menyala_dan_coba_lagi">Terjadi kesalahan, pastikan koneksi internet menyala dan coba lagi.</string>
+    <string name="maaf_riwayat_lokasi_yang_anda_simpan_tdk_berlaku_lagi_ingin_ke_menu_dimana_saya">Maaf, riwayat lokasi yang anda simpan sudah tidak berlaku lagi, anda ingin kembali ke menu \"Dimana Saya?\" ?</string>
 </resources>

@@ -11,7 +11,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "GOOGLE_API_KEY", '"AIzaSyABTxpRVD2u_czfqMX7bb6H_WYBxbeXvC4"')
-        buildConfigField("String", "DOMAIN_SERVER", '"http://192.168.1.100/"')
+        buildConfigField("String", "DOMAIN_SERVER", '"http://192.168.1.103/"')
 //        buildConfigField("String", "DOMAIN_SERVER", '"https://topapp.id/"')
     }
     buildTypes {

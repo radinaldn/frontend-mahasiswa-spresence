@@ -89,6 +89,7 @@
     <string name="id_telegram_contoh_3567890">Telegram ID. Ex : 3567890</string>
     <string name="arahkan_kamera_qr_code">Point the camera at the QR Code ...</string>
     <string name="terjadi_kesalahan_pastikan_koneksi_internet_anda_menyala_dan_coba_lagi">Error occured, make sure you have internet connection and try again.</string>
+    <string name="maaf_riwayat_lokasi_yang_anda_simpan_tdk_berlaku_lagi_ingin_ke_menu_dimana_saya">Sorry, the location history you saved is no longer valid, you want to go back to the \ "Where Am I? \" Menu?</string>
 
 
 </resources>

@@ -201,6 +201,8 @@ public class DimanaSayaActivity extends AppCompatActivity implements OnMapReadyC
                     if (isAutoDateTimeSettingsON(this)) {
                         sessionManager.createMyLocationSession(strMyLat, strMyLng, saatIni);
                         showSessionLocation();
+
+                        goToScanQRCodeActivity();
                     } else {
                         showSnackAutoDate();
                     }
@@ -210,6 +212,11 @@ public class DimanaSayaActivity extends AppCompatActivity implements OnMapReadyC
             }
 
         }
+    }
+
+    private void goToScanQRCodeActivity() {
+        Intent intent = new Intent(DimanaSayaActivity.this, ScanQRCodeActivity.class);
+        startActivity(intent);
     }
 
     void getLocation() {
