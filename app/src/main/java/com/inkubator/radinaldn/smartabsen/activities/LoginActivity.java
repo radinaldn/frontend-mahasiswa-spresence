@@ -4,8 +4,11 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -23,6 +26,13 @@ import com.inkubator.radinaldn.smartabsen.rests.ApiInterface;
 import com.inkubator.radinaldn.smartabsen.utils.AbsRuntimePermission;
 import com.inkubator.radinaldn.smartabsen.utils.ConnectionDetector;
 import com.inkubator.radinaldn.smartabsen.utils.SessionManager;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.DexterError;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.PermissionRequestErrorListener;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import java.util.List;
 
@@ -55,6 +65,7 @@ public class LoginActivity extends AbsRuntimePermission {
     ConnectionDetector connectionDetector;
     private static final int REQUEST_PERMISSION = 10;
     private TelephonyManager telephonyManager;
+    View parentLayout;
 
 
     @Override
@@ -62,17 +73,43 @@ public class LoginActivity extends AbsRuntimePermission {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        parentLayout = findViewById(android.R.id.content);
+
         // do runtime permission
         //request permission here
-        requestAppPermissions(new String[]{
+        Dexter.withActivity(this)
+                .withPermissions(
                         Manifest.permission.CAMERA,
                         Manifest.permission.READ_EXTERNAL_STORAGE,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         Manifest.permission.ACCESS_FINE_LOCATION,
                         Manifest.permission.ACCESS_COARSE_LOCATION,
                         Manifest.permission.READ_PHONE_STATE,
-                        Manifest.permission.RECORD_AUDIO},
-                R.string.msg, REQUEST_PERMISSION);
+                        Manifest.permission.RECORD_AUDIO
+                )
+                .withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport report) {
+                        if (report.areAllPermissionsGranted()){
+                            Toast.makeText(getApplicationContext(), R.string.permission_granted, Toast.LENGTH_SHORT).show();
+                        } else {
+                            showSnacPermission();
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                        token.continuePermissionRequest();
+                    }
+                })
+                .withErrorListener(new PermissionRequestErrorListener() {
+                    @Override
+                    public void onError(DexterError error) {
+                        Toast.makeText(getApplicationContext(), R.string.terjadi_kesalahan+ " "+error.toString(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .check();
 
         connectionDetector = new ConnectionDetector(LoginActivity.this);
 
@@ -93,6 +130,20 @@ public class LoginActivity extends AbsRuntimePermission {
                 }
             }
         });
+    }
+
+    private void showSnacPermission() {
+        Snackbar.make(parentLayout, getResources().getString(R.string.aplikasi_membutuhkan_perizinan), Snackbar.LENGTH_LONG).setAction(R.string.buka_pengaturan, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                Uri uri = Uri.fromParts("package", getPackageName(), null);
+                intent.setData(uri);
+                startActivityForResult(intent, 0);
+
+            }
+        }).show();
     }
 
     @Override

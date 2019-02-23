@@ -106,6 +106,12 @@
             android:gravity="center"
             android:text="@string/jenis_kelamin" />
 
+        <Button
+            android:id="@+id/btChangeLanguage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/change_language_setting"/>
+
 
     </LinearLayout>
 

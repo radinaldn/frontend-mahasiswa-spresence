@@ -19,7 +19,7 @@
     <string name="anda_hanya_bisa_login_menggunakan_device_ini">Anda hanya diperbolehkan login menggunakan perangkat ini. Hubungi Administrator jika anda mengganti smartphone.</string>
 
     <string name="msg">Mohon berikan semua izin</string>
-    <string name="license_title">Smart Presence Dosen v1.0</string>
+    <string name="license_title">Smart Presence Mahasiswa v1.0</string>
     <string name="title_activity_profile_saya">ProfileSayaActivity</string>
     <string name="daftar_kehadiran_dosen">Daftar Kehadiran Dosen</string>
     <string name="gps_is_not_activated">GPS belum diaktifkan</string>
@@ -37,8 +37,8 @@
     <string name="mohon_non_aktifkan_fitur_lokasi_tiruan_aplikasi_tidak_mengizinkan">Mohon non-aktifkan fitur lokasi tiruan.\Anda tidak diizinkan memindai QR-Code jika terdeteksi menggunakan lokasi palsu.</string>
     <string name="mohon_aktifkan_tanggal_dan_waktu_otomatis">Mohon aktifkan tanggal dan waktu otomatis</string>
     <string name="update">Pembaruan : </string>
-    <string name="tidak_berlaku">(Tidak Berlaku)\n*Riwayat lokasi hanya berlaku untuk</string>
-    <string name="berlaku">(Berlau)\n*Riwayat lokasi hanya berlaku untuk</string>
+    <string name="tidak_berlaku"> (Tidak Berlaku)\n*Riwayat lokasi hanya berlaku untuk</string>
+    <string name="berlaku"> (Berlaku)\n*Riwayat lokasi hanya berlaku untuk</string>
     <string name="menit">menit.</string>
     <string name="suruh_aplikasi_membaca_lokasi_lagi">Suruh aplikasi membaca lokasi lagi?</string>
     <string name="ya">Ya</string>
@@ -88,7 +88,16 @@
     <string name="copy_chat_id_yang_didapat_dari_bot_kemudian_paste_ke_kolom_berikut">*Copy Chat ID yang didapat dari bot, kemudian paste ke kolom berikut.</string>
     <string name="id_telegram_contoh_3567890">ID Telegram. Contoh : 3567890</string>
 
-    <string name="arahkan_kamera_qr_code">Arahkan kamera ke QR Code ...</string>
+    <string name="arahkan_kamera_qr_code">Arahkan kamera ke QR Code…</string>
     <string name="terjadi_kesalahan_pastikan_koneksi_internet_anda_menyala_dan_coba_lagi">Terjadi kesalahan, pastikan koneksi internet menyala dan coba lagi.</string>
     <string name="maaf_riwayat_lokasi_yang_anda_simpan_tdk_berlaku_lagi_ingin_ke_menu_dimana_saya">Maaf, riwayat lokasi yang anda simpan sudah tidak berlaku lagi, anda ingin kembali ke menu \"Dimana Saya?\" ?</string>
+    <string name="change_language_setting">Ubah Pengaturan Bahasa</string>
+    <string name="mohon_berikan_perizinan_lokasi">Aplikasi membutuhkan izin untuk menggunakan gps</string>
+    <string name="buka_pengaturan">Buka Pengaturan</string>
+    <string name="aplikasi_membutuhkan_perizinan">Aplikasi membutuhkan izin untuk menggunakan beberapa perangkat keras</string>
+
+    <plurals name="jarak_terlalu_jauh">
+        <item quantity="one">Gagal memindai. Jarak anda masih terlalu jauh (%d meter)</item>
+        <item quantity="other">Gagal memindai. Jarak anda masih terlalu jauh (%d meter)</item>
+    </plurals>
 </resources>

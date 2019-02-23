@@ -12,6 +12,8 @@ android {
 
         buildConfigField("String", "GOOGLE_API_KEY", '"AIzaSyABTxpRVD2u_czfqMX7bb6H_WYBxbeXvC4"')
         buildConfigField("String", "DOMAIN_SERVER", '"http://192.168.1.103/"')
+        buildConfigField("int", "BATAS_JARAK_SCANNING", '100') // in meter
+        buildConfigField("int", "BATAS_BERLAKU_LOKASI_TERSIMPAN", '5') // in minutes
 //        buildConfigField("String", "DOMAIN_SERVER", '"https://topapp.id/"')
     }
     buildTypes {

@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.inkubator.radinaldn.smartabsen.R;
+import com.inkubator.radinaldn.smartabsen.activities.HistoriPresensiActivity;
 import com.inkubator.radinaldn.smartabsen.adapters.HistoriPresensiAdapter;
 import com.inkubator.radinaldn.smartabsen.models.PresensiDetail;
 import com.inkubator.radinaldn.smartabsen.responses.ResponsePresensiDetail;
@@ -46,14 +47,17 @@ public class HistoriPresensiFragment extends Fragment {
     public static final String TAG = HistoriPresensiFragment.class.getSimpleName();
     SessionManager sessionManager;
     private String status;
+    private static long scrollPosition;
+    private int tabPosition = 0;
 
-    public static HistoriPresensiFragment newInstance(String id_presensi, String status_kehadiran) {
+    public static HistoriPresensiFragment newInstance(String id_presensi, String status_kehadiran, long lngScrollPosition) {
         ID_PRESENSI = id_presensi;
         Bundle args = new Bundle();
         args.putString(ARG_STATUS, status_kehadiran);
 
         HistoriPresensiFragment fragment = new HistoriPresensiFragment();
         fragment.setArguments(args);
+        scrollPosition = lngScrollPosition;
         return fragment;
     }
 
@@ -80,22 +84,41 @@ public class HistoriPresensiFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_histori_presensi, container, false);
         recyclerView = view.findViewById(R.id.recyclerView);
 
+        // get tabposition
+        if (status.equalsIgnoreCase("Hadir")) {
+            tabPosition = 0;
+        } else {
+            tabPosition = 1;
+        }
 
         swipeRefreshLayout = view.findViewById(R.id.swipe_activity_histori_presensi);
         swipeRefreshLayout.setColorSchemeResources(R.color.refresh, R.color.refresh1, R.color.refresh2);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                Intent intent = getActivity().getIntent();
-                getActivity().finish();
-                getActivity().startActivity(intent);
-
+                refreshData(0, tabPosition);
             }
         });
 
         getHistoriPresensi(ID_PRESENSI, status);
 
         return view;
+    }
+
+    // this method call activity method
+    public void refreshData(long scrollPosition, int tabPosition) {
+//        Toast.makeText(getContext(), "Calling refreshData() from adapter", Toast.LENGTH_SHORT).show();
+//        recyclerView.setAdapter(null);
+//        recyclerView.setLayoutManager(null);
+//
+//        getHistoriPresensi(ID_PRESENSI, status);
+        if (getContext() instanceof HistoriPresensiActivity) {
+            ((HistoriPresensiActivity) getActivity()).refreshFragment(scrollPosition, tabPosition);
+            System.out.println("scrollPosition : " + scrollPosition);
+            System.out.println("intStatus : " + tabPosition);
+        }
+
+
     }
 
     private void getHistoriPresensi(String idPresensi, final String status_kehadiran) {

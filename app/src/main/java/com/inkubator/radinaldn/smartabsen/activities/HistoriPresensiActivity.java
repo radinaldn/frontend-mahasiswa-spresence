@@ -56,16 +56,25 @@ public class HistoriPresensiActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.viewpager_histori_presensi);
         tabLayout = findViewById(R.id.tabs_histori_presensi);
 
-        setupViewPager(viewPager);
+        setupViewPager(viewPager, 0);
         tabLayout.setupWithViewPager(viewPager);
 
 
     }
 
-    private void setupViewPager(ViewPager viewPager) {
+    private void setupViewPager(ViewPager viewPager, long scrollPosition) {
         HistoriPresensiViewPagerAdapter adapter = new HistoriPresensiViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(HistoriPresensiFragment.newInstance(ID_PRESENSI, "Hadir"), getResources().getString(R.string.hadir));
-        adapter.addFragment(HistoriPresensiFragment.newInstance(ID_PRESENSI, "Tidak Hadir"), getResources().getString(R.string.tidak_hadir));
+        adapter.addFragment(HistoriPresensiFragment.newInstance(ID_PRESENSI, "Hadir", scrollPosition), getResources().getString(R.string.hadir));
+        adapter.addFragment(HistoriPresensiFragment.newInstance(ID_PRESENSI, "Tidak Hadir", scrollPosition), getResources().getString(R.string.tidak_hadir));
         viewPager.setAdapter(adapter);
+    }
+
+    public void refreshFragment(long scrollPosition, int tabPosition) {
+//        Toast.makeText(getApplicationContext(), "Calling refreshFragment() from fragment", Toast.LENGTH_SHORT).show();
+        setupViewPager(viewPager, scrollPosition);
+        TabLayout.Tab tab = tabLayout.getTabAt(tabPosition);
+        if (tab != null)
+            tab.select();
+
     }
 }

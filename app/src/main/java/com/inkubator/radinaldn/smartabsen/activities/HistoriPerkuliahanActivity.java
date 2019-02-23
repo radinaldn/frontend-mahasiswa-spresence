@@ -86,9 +86,9 @@ public class HistoriPerkuliahanActivity extends AppCompatActivity {
         System.out.println(cur_year + ", " + cur_month + ", " + cur_day);
 
         // init widget datetimeline
-        timeline.setFirstVisibleDate(cur_year, Calendar.JULY, 1);
+        timeline.setFirstVisibleDate(cur_year, Calendar.JANUARY, 1);
         timeline.setSelectedDate(cur_year, (cur_month - 1), cur_day);
-        timeline.setLastVisibleDate(cur_year + 1, Calendar.JULY, 1);
+        timeline.setLastVisibleDate(cur_year, Calendar.DECEMBER, 1);
 
         recyclerView = findViewById(R.id.recyclerView);
         swipeRefreshLayout = findViewById(R.id.swipe_activity_agenda);
@@ -111,7 +111,7 @@ public class HistoriPerkuliahanActivity extends AppCompatActivity {
         timeline.setOnDateSelectedListener(new DatePickerTimeline.OnDateSelectedListener() {
             @Override
             public void onDateSelected(int year, int month, int day, int index) {
-                //Toast.makeText(getApplicationContext(), "Sekarang tahun "+year+", bulan "+(month+1)+", tanggal "+day, Toast.LENGTH_LONG).show();
+//                Toast.makeText(getApplicationContext(), "Sekarang tahun "+year+", bulan "+(month+1)+", tanggal "+day, Toast.LENGTH_LONG).show();
                 historiPerkuliahanList.clear();
                 int month2 = month + 1;
                 String tahun = String.valueOf(year);

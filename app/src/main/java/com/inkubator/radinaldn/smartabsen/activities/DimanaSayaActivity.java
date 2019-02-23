@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,19 +34,29 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.inkubator.radinaldn.smartabsen.BuildConfig;
 import com.inkubator.radinaldn.smartabsen.R;
 import com.inkubator.radinaldn.smartabsen.utils.SessionManager;
 import com.instacart.library.truetime.TrueTime;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.DexterError;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.PermissionRequestErrorListener;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import org.ankit.gpslibrary.MyTracker;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class DimanaSayaActivity extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener {
 
     private static final long BATAS_MAKS_SESSION_LOCATION = 5; // in minutes
+    public static final String TAG_JARAK_TERLALU_JAUH = "jarak_terlalu_jauh";
     private GoogleMap mMap;
     private static final int REQUEST_CODE_PERMISSION = 2;
     String mPermission = Manifest.permission.ACCESS_FINE_LOCATION;
@@ -80,23 +91,10 @@ public class DimanaSayaActivity extends AppCompatActivity implements OnMapReadyC
         parentLayout = findViewById(android.R.id.content);
 
         // Do Runtime Permission
-        try {
-            if (ActivityCompat.checkSelfPermission(this, mPermission)
-                    != MockPackageManager.PERMISSION_GRANTED) {
-
-                ActivityCompat.requestPermissions(this, new String[]{mPermission, Manifest.permission.READ_PHONE_STATE},
-                        REQUEST_CODE_PERMISSION);
-            } else {
-                // read location
-                if (isMockSettingsON(DimanaSayaActivity.this)) {
-                    showSnacMockLoc();
-                } else {
-                    new GetMyLocation().execute();
-                }
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (isMockSettingsON(DimanaSayaActivity.this)) {
+            showSnacMockLoc();
+        } else {
+            checkPermissionThenGetLocation();
         }
 
         // print last loc into textview
@@ -120,25 +118,49 @@ public class DimanaSayaActivity extends AppCompatActivity implements OnMapReadyC
                 goToMainActivity();
             }
         });
+
+        // jika terdeteksi berasal adri ScanQRCodeActivity dengan case, jarak scanning terlalu jauh
+        if (getIntent().getIntExtra(TAG_JARAK_TERLALU_JAUH, 0)!=0){
+            showSnacLocTerlaluJauh(getIntent().getIntExtra(TAG_JARAK_TERLALU_JAUH, 0));
+        }
     }
 
     private void showSnacMockLoc() {
-        Snackbar.make(parentLayout, getResources().getString(R.string.mohon_non_aktifkan_fitur_lokasi_tiruan), Snackbar.LENGTH_LONG).setAction("Buka Pengaturan", new View.OnClickListener() {
+        Snackbar.make(parentLayout, getResources().getString(R.string.mohon_non_aktifkan_fitur_lokasi_tiruan), Snackbar.LENGTH_LONG).setAction(R.string.buka_pengaturan, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(android.provider.Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS));
+                startActivity(new Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS));
             }
         }).show();
     }
 
     private void showSnackAutoDate() {
-        Snackbar.make(parentLayout, getResources().getString(R.string.mohon_aktifkan_tanggal_dan_waktu_otomatis), Snackbar.LENGTH_LONG).setAction("Buka Pengaturan", new View.OnClickListener() {
+        Snackbar.make(parentLayout, getResources().getString(R.string.mohon_aktifkan_tanggal_dan_waktu_otomatis), Snackbar.LENGTH_LONG).setAction(R.string.buka_pengaturan, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivityForResult(new Intent(android.provider.Settings.ACTION_DATE_SETTINGS), 0);
 
             }
         }).show();
+    }
+
+    private void showSnacPermissionLocation() {
+        Snackbar.make(parentLayout, getResources().getString(R.string.mohon_berikan_perizinan_lokasi), Snackbar.LENGTH_LONG).setAction(R.string.buka_pengaturan, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                Uri uri = Uri.fromParts("package", getPackageName(), null);
+                intent.setData(uri);
+                startActivityForResult(intent, 0);
+
+            }
+        }).show();
+    }
+
+    private void showSnacLocTerlaluJauh(int jarak) {
+        String pesan = getResources().getQuantityString(R.plurals.jarak_terlalu_jauh, jarak, jarak);
+        Snackbar.make(parentLayout, pesan, Snackbar.LENGTH_LONG).setDuration(Snackbar.LENGTH_LONG).show();
     }
 
     private void showSessionLocation() {
@@ -152,11 +174,11 @@ public class DimanaSayaActivity extends AppCompatActivity implements OnMapReadyC
 
         long selisih = hitungSelisihMenit(saatIni, sessDate);
 
-        if (selisih > 5) {
-            tvLastLoc.setText(getResources().getString(R.string.update) + sessDate + getString(R.string.tidak_berlaku) + BATAS_MAKS_SESSION_LOCATION + getString(R.string.menit));
+        if (selisih > BuildConfig.BATAS_BERLAKU_LOKASI_TERSIMPAN) {
+            tvLastLoc.setText(getResources().getString(R.string.update) +" "+ sessDate +" "+ getString(R.string.tidak_berlaku) +" "+ BATAS_MAKS_SESSION_LOCATION +" "+ getString(R.string.menit));
             tvLastLoc.setTextColor(getResources().getColor(R.color.RedBootstrap));
         } else {
-            tvLastLoc.setText(getResources().getString(R.string.update) + sessDate + getString(R.string.berlaku) + BATAS_MAKS_SESSION_LOCATION + getResources().getString(R.string.menit));
+            tvLastLoc.setText(getResources().getString(R.string.update) +" "+ sessDate +" "+ getString(R.string.berlaku) +" "+ BATAS_MAKS_SESSION_LOCATION +" "+ getResources().getString(R.string.menit));
             tvLastLoc.setTextColor(getResources().getColor(R.color.GreenBootstrap));
         }
 
@@ -183,7 +205,7 @@ public class DimanaSayaActivity extends AppCompatActivity implements OnMapReadyC
             if (isMockSettingsON(this)) {
                 showSnacMockLoc();
             } else {
-                new GetMyLocation().execute();
+                checkPermissionThenGetLocation();
             }
 
         } else if (id == R.id.btSimpanLokasi) {
@@ -208,10 +230,43 @@ public class DimanaSayaActivity extends AppCompatActivity implements OnMapReadyC
                     }
 
 
+                } else {
+                    Toast.makeText(getApplicationContext(), R.string.tidak_bisa_mendapatkan_lokasi, Toast.LENGTH_SHORT).show();
+                    System.out.println("MyLat : "+latLng.latitude+"\nMyLng : "+latLng.longitude);
                 }
             }
 
         }
+    }
+
+    private void checkPermissionThenGetLocation() {
+        Dexter.withActivity(DimanaSayaActivity.this)
+                .withPermissions(
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION)
+                .withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport report) {
+                        if (report.areAllPermissionsGranted()){
+                            new GetMyLocation().execute();
+                        } else {
+                            showSnacPermissionLocation();
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                        token.continuePermissionRequest();
+                    }
+                })
+                .withErrorListener(new PermissionRequestErrorListener() {
+                    @Override
+                    public void onError(DexterError error) {
+                        Toast.makeText(getApplicationContext(), R.string.terjadi_kesalahan+ " "+error.toString(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .check();
     }
 
     private void goToScanQRCodeActivity() {
@@ -271,7 +326,7 @@ public class DimanaSayaActivity extends AppCompatActivity implements OnMapReadyC
                     if (isMockSettingsON(DimanaSayaActivity.this)) {
                         showSnacMockLoc();
                     } else {
-                        new GetMyLocation().execute();
+                        checkPermissionThenGetLocation();
                     }
                 }
             });
@@ -298,7 +353,7 @@ public class DimanaSayaActivity extends AppCompatActivity implements OnMapReadyC
         BitmapDescriptor customIcon = BitmapDescriptorFactory.fromResource(R.drawable.ic_map_marker);
 
         myMarker = mMap.addMarker(new
-                MarkerOptions().position(new LatLng(latitude, longitude)).title(getResources().getString(R.string.posisi_saya)).snippet("Update : " + saatIni).icon(bitmapDescriptorFromVector(this, R.drawable.ic_map_marker)));
+                MarkerOptions().position(new LatLng(latitude, longitude)).title(getResources().getString(R.string.posisi_saya)).snippet(R.string.update+" "+ saatIni).icon(bitmapDescriptorFromVector(this, R.drawable.ic_map_marker)));
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(latitude, longitude)));
         mMap.moveCamera(CameraUpdateFactory.zoomTo(15));

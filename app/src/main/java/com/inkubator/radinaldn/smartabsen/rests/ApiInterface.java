@@ -95,7 +95,7 @@ public interface ApiInterface {
             @Field("nim") String nim,
             @Field("lat") String lat,
             @Field("lng") String lng,
-            @Field("jarak") String jarak
+            @Field("jarak") int jarak
     );
 
     @FormUrlEncoded

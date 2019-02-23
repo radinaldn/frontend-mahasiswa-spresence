@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
@@ -68,7 +69,7 @@ public class ProfileSayaActivity extends AppCompatActivity {
     public String finalPhotoName;
 
     private TextView tv_size;
-    private Button bt_batal, bt_upload;
+    private Button bt_batal, bt_upload, btChangeLanguage;
 
     private Uri imageCaptureUri;
     private File destFile;
@@ -115,6 +116,15 @@ public class ProfileSayaActivity extends AppCompatActivity {
         tv_imei = findViewById(R.id.tv_imei);
         tv_id_telegram = findViewById(R.id.tv_id_telegram);
         tv_jk = findViewById(R.id.tv_jk);
+        btChangeLanguage = findViewById(R.id.btChangeLanguage);
+
+        btChangeLanguage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mIntent = new Intent(Settings.ACTION_LOCALE_SETTINGS);
+                startActivity(mIntent);
+            }
+        });
 
         Picasso.with(getApplicationContext()).load(ServerConfig.IMAGE_PATH+"/mahasiswa/"+foto).into(iv_foto);
 

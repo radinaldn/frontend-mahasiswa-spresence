@@ -19,7 +19,7 @@
     <string name="anda_hanya_bisa_login_menggunakan_device_ini">You can only sign in using the current device. Contact the Administrator if you change your smartphone.</string>
 
     <string name="msg">Please grant all permissions</string>
-    <string name="license_title">Smart Presence Dosen v1.0</string>
+    <string name="license_title">Smart Presence Mahasiswa v1.0</string>
     <string name="title_activity_profile_saya">ProfileSayaActivity</string>
     <string name="daftar_kehadiran_dosen">Lecturer Attendance List</string>
     <string name="gps_is_not_activated">GPS has not been activated</string>
@@ -90,6 +90,14 @@
     <string name="arahkan_kamera_qr_code">Point the camera at the QR Code ...</string>
     <string name="terjadi_kesalahan_pastikan_koneksi_internet_anda_menyala_dan_coba_lagi">Error occured, make sure you have internet connection and try again.</string>
     <string name="maaf_riwayat_lokasi_yang_anda_simpan_tdk_berlaku_lagi_ingin_ke_menu_dimana_saya">Sorry, the location history you saved is no longer valid, you want to go back to the \ "Where Am I? \" Menu?</string>
+    <string name="change_language_setting">Change Language Setting</string>
+    <string name="mohon_berikan_perizinan_lokasi">The application requires permission to use GPS</string>
+    <string name="buka_pengaturan">Open Settings</string>
+    <string name="aplikasi_membutuhkan_perizinan">The application requires permission to use some hardware</string>
 
+    <plurals name="jarak_terlalu_jauh">
+        <item quantity="one">Failed to scaninng. Your distance is too far away (%d meter)</item>
+        <item quantity="other">Failed to scaninng. Your distance is too far away (%d meters)</item>
+    </plurals>
 
 </resources>
