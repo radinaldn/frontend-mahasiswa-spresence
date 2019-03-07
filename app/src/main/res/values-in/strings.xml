@@ -95,6 +95,7 @@
     <string name="mohon_berikan_perizinan_lokasi">Aplikasi membutuhkan izin untuk menggunakan gps</string>
     <string name="buka_pengaturan">Buka Pengaturan</string>
     <string name="aplikasi_membutuhkan_perizinan">Aplikasi membutuhkan izin untuk menggunakan beberapa perangkat keras</string>
+    <string name="qr_code_tidak_valid">QR Code yang anda pindai tidak valid</string>
 
     <plurals name="jarak_terlalu_jauh">
         <item quantity="one">Gagal memindai. Jarak anda masih terlalu jauh (%d meter)</item>

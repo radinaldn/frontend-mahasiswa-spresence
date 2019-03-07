@@ -17,6 +17,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -41,6 +42,7 @@ import com.karumi.dexter.listener.single.PermissionListener;
 
 import org.ankit.gpslibrary.MyTracker;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -208,46 +210,78 @@ public class ScanQRCodeActivity extends AppCompatActivity {
                                     public void onResult(Barcode barcode) {
                                         barcodeResult = barcode;
                                         //                        Toast.makeText(getApplicationContext(), "latitude saya : "+latittude+"\nHasil Scan : " + barcode.rawValue, Toast.LENGTH_LONG).show();
-                                        final String scanResult = barcode.rawValue;
-                                        Log.i("TAG", "onLocationChanged: scanResult = " + scanResult);
+                                        final String scanResultEncoded = barcode.rawValue;
+                                        Log.i("TAG", "onLocationChanged: scanResultEncoded = " + scanResultEncoded);
 
-                                        for (String retval : scanResult.split("#")) {
+                                        // check result scan
+                                        if (!isBase64Encoded(scanResultEncoded)){
+                                            Toast.makeText(getApplicationContext(), getString(R.string.qr_code_tidak_valid), Toast.LENGTH_LONG).show();
+                                        }
+
+                                        // Lakukan decode (next update decrypt)
+                                        byte[] data = Base64.decode(scanResultEncoded, Base64.DEFAULT);
+
+                                        String scanResultDecoded = "";
+                                        try {
+                                            scanResultDecoded = new String(data, "UTF-8");
+                                        } catch (UnsupportedEncodingException e) {
+                                            e.printStackTrace();
+                                        }
+
+                                        Log.i("TAG", "onLocationChanged: scanResultDecoded = " + scanResultDecoded);
+
+                                        /* Note (Belum selesai)
+                                        Lakukan proses decrypt terhadap isi qr code disini,
+                                        baru tampung plain text nya ke scanResultSub
+                                         */
+
+                                        for (String retval : scanResultDecoded.split("#")) {
                                             scanResultSub.add(retval);
                                             Log.i("TAG", "onLocationChanged: scanResultSub = " + retval);
                                         }
 
-                                        double doubleDosenLat = Double.parseDouble(scanResultSub.get(1).toString());
-                                        double doubleDosenLng = Double.parseDouble(scanResultSub.get(2).toString());
-                                        double doubleMyLat = Double.parseDouble(myLat);
-                                        double doubleMyLng = Double.parseDouble(myLng);
+                                        // check apakah qr code == valid
 
-                                        // hitung jarak
-                                        int jarak = getDistance(doubleDosenLat, doubleMyLat, doubleDosenLng, doubleMyLng, 0, 0);
-                                        Log.i("ScanQRCo", "Jarak : " + jarak);
+                                        // ada 3 komponen penting pada isi qr cde (id_presensi, lat_dosen, lng_dosen)
+                                        if (scanResultSub.size() == 3){
+                                            double doubleDosenLat = Double.parseDouble(scanResultSub.get(1).toString());
+                                            double doubleDosenLng = Double.parseDouble(scanResultSub.get(2).toString());
+                                            double doubleMyLat = Double.parseDouble(myLat);
+                                            double doubleMyLng = Double.parseDouble(myLng);
 
-                                        String id_presensi = scanResultSub.get(0).toString();
-                                        String nim = sessionManager.getMahasiswaDetail().get(TAG_NIM);
-                                        String lat = myLat;
-                                        String lng = myLng;
-                                        String alt = altitude;
+                                            // hitung jarak
+                                            int jarak = getDistance(doubleDosenLat, doubleMyLat, doubleDosenLng, doubleMyLng, 0, 0);
+                                            Log.i("ScanQRCo", "Jarak : " + jarak);
 
-                                        if (connectionDetector.isConnectingToInternet()) {
+                                            String id_presensi = scanResultSub.get(0).toString();
+                                            String nim = sessionManager.getMahasiswaDetail().get(TAG_NIM);
+                                            String lat = myLat;
+                                            String lng = myLng;
+                                            String alt = altitude;
 
-                                            // jika jarak <= 100meter
-                                            System.out.println("jarak : "+jarak);
-                                            if (jarak<= BuildConfig.BATAS_JARAK_SCANNING){
-                                                isiPresensi(id_presensi, nim, lat, lng, jarak);
+                                            if (connectionDetector.isConnectingToInternet()) {
+
+                                                // jika jarak <= 100meter
+                                                System.out.println("jarak : "+jarak);
+                                                if (jarak<= BuildConfig.BATAS_JARAK_SCANNING){
+
+
+                                                    isiPresensi(id_presensi, nim, lat, lng, jarak);
+                                                } else {
+                                                    Intent intent = new Intent(ScanQRCodeActivity.this, DimanaSayaActivity.class);
+                                                    intent.putExtra(DimanaSayaActivity.TAG_JARAK_TERLALU_JAUH, jarak);
+                                                    finish();
+                                                    startActivity(intent);
+                                                }
+
                                             } else {
-                                                Intent intent = new Intent(ScanQRCodeActivity.this, DimanaSayaActivity.class);
-                                                intent.putExtra(DimanaSayaActivity.TAG_JARAK_TERLALU_JAUH, jarak);
+
                                                 finish();
-                                                startActivity(intent);
+                                                Toast.makeText(getApplicationContext(), R.string.terjadi_kesalahan_pastikan_koneksi_internet_anda_menyala_dan_coba_lagi, Toast.LENGTH_SHORT).show();
                                             }
-
                                         } else {
-
-                                            finish();
-                                            Toast.makeText(getApplicationContext(), R.string.terjadi_kesalahan_pastikan_koneksi_internet_anda_menyala_dan_coba_lagi, Toast.LENGTH_SHORT).show();
+                                            // qr code tidak valid
+                                            Toast.makeText(getApplicationContext(), R.string.qr_code_tidak_valid, Toast.LENGTH_LONG).show();
                                         }
 
 
@@ -421,5 +455,23 @@ public class ScanQRCodeActivity extends AppCompatActivity {
             }
         }).show();
     }
+
+    public static boolean isBase64Encoded(String str)
+    {
+        try
+        {
+            // If no exception is caught, then it is possibly a base64 encoded string
+            byte[] data = Base64.decode(str, Base64.DEFAULT);
+            // The part that checks if the string was properly padded to the
+            // correct length was borrowed from d@anish's solution
+            return (str.replace(" ","").length() % 4 == 0);
+        }
+        catch(Exception e)
+        {
+            // If exception is caught, then it is not a base64 encoded string
+            return false;
+        }
+    }
+
 
 }

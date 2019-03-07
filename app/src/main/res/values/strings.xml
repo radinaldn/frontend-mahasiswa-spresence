@@ -94,6 +94,7 @@
     <string name="mohon_berikan_perizinan_lokasi">The application requires permission to use GPS</string>
     <string name="buka_pengaturan">Open Settings</string>
     <string name="aplikasi_membutuhkan_perizinan">The application requires permission to use some hardware</string>
+    <string name="qr_code_tidak_valid">QR Code is invalid</string>
 
     <plurals name="jarak_terlalu_jauh">
         <item quantity="one">Failed to scaninng. Your distance is too far away (%d meter)</item>
